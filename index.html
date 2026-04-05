@@ -1,0 +1,2298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetLearn — Internetworking Mastery</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #070b14;
+  --bg2: #0d1424;
+  --bg3: #111827;
+  --bg4: #1a2236;
+  --border: #1e2d45;
+  --border2: #2a3f5f;
+  --cyan: #00d4ff;
+  --purple: #7c3aed;
+  --green: #10b981;
+  --amber: #f59e0b;
+  --red: #ef4444;
+  --pink: #ec4899;
+  --teal: #06b6d4;
+  --lime: #84cc16;
+  --orange: #f97316;
+  --violet: #a855f7;
+  --blue: #3b82f6;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --mono: 'JetBrains Mono', 'Courier New', monospace;
+  --sans: 'Syne', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--cyan)}
+
+/* NAVBAR */
+#navbar{position:sticky;top:0;z-index:100;background:rgba(7,11,20,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);display:flex;align-items:center;height:56px;padding:0 1.25rem;gap:12px}
+#nav-toggle{background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 10px;color:var(--text2);cursor:pointer;font-size:16px;font-family:var(--mono);transition:all .2s}
+#nav-toggle:hover{border-color:var(--cyan);color:var(--cyan)}
+#nav-brand{background:none;border:none;cursor:pointer;font-family:var(--sans);font-size:18px;font-weight:800;color:var(--cyan);letter-spacing:-0.5px}
+#nav-brand span{color:var(--text3);font-size:11px;font-family:var(--mono);margin-left:6px}
+#nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}
+#nav-progress-label{color:var(--text3);font-size:11px}
+#nav-progress-bar{width:90px;height:5px;background:var(--bg4);border-radius:3px;overflow:hidden}
+#nav-progress-fill{height:100%;background:var(--cyan);border-radius:3px;transition:width .5s ease;width:0%}
+
+/* LAYOUT */
+#app{display:flex;max-width:1200px;margin:0 auto}
+#sidebar{width:0;overflow:hidden;transition:width .3s ease;flex-shrink:0;padding-top:.75rem}
+#sidebar.open{width:250px}
+#sidebar-inner{width:250px;padding-right:.5rem}
+.sidebar-btn{display:flex;align-items:center;gap:8px;width:100%;background:transparent;border:none;cursor:pointer;padding:7px 14px;border-radius:7px;font-size:12px;font-family:var(--mono);color:var(--text2);text-align:left;transition:all .15s;margin-bottom:2px}
+.sidebar-btn:hover{background:var(--bg4);color:var(--text)}
+.sidebar-btn.active{color:var(--cyan);background:rgba(0,212,255,0.08)}
+.sidebar-btn .check{margin-left:auto;font-size:10px}
+.sidebar-section{padding:6px 14px;font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-top:8px}
+
+/* MAIN */
+#main{flex:1;min-width:0;padding:1.5rem 0 5rem}
+
+/* HOME */
+#home-hero{text-align:center;padding:3.5rem 1rem 2rem}
+#home-hero .tag{font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:14px}
+#home-hero h1{font-family:var(--sans);font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.15;margin-bottom:1rem;color:var(--text)}
+#home-hero h1 .hl{color:var(--cyan)}
+#home-hero p{color:var(--text2);font-size:15px;max-width:520px;margin:0 auto 2rem;line-height:1.75}
+#home-progress{max-width:420px;margin:0 auto 3rem;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem}
+.progress-row{display:flex;justify-content:space-between;margin-bottom:8px}
+.progress-row span:first-child{color:var(--text3);font-size:12px}
+.progress-row span:last-child{color:var(--cyan);font-size:12px;font-weight:700}
+.pbar{height:7px;background:var(--bg4);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.pbar-fill{height:100%;border-radius:4px;transition:width .6s ease}
+#home-sub{color:var(--text3);font-size:11px}
+
+/* TOPIC GRID */
+#topic-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:0 1rem}
+.topic-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;text-align:left;transition:all .2s;position:relative;overflow:hidden;width:100%}
+.topic-card::before{content:'';position:absolute;inset:0;background:var(--tc,transparent);opacity:0;transition:opacity .2s}
+.topic-card:hover{border-color:var(--tc);transform:translateY(-2px)}
+.topic-card:hover::before{opacity:.04}
+.topic-card .done-badge{position:absolute;top:10px;right:10px;font-size:9px;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:.5px}
+.topic-card .icon{font-size:26px;margin-bottom:10px;display:block}
+.topic-card .name{font-weight:700;font-size:13px;margin-bottom:5px}
+.topic-card .meta{color:var(--text3);font-size:11px;line-height:1.5}
+
+/* PAGE */
+.page{max-width:820px;margin:0 auto;padding:0 1.25rem 4rem;display:none}
+.page.active{display:block}
+.page-header{padding:1.5rem 0 1.25rem;border-bottom:1px solid var(--border);margin-bottom:1.5rem}
+.page-header .topic-icon{font-size:30px;margin-bottom:8px;display:block}
+.page-header h2{font-family:var(--sans);font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:.75rem}
+.analogy-box{border-radius:9px;padding:12px 16px;margin-top:.5rem}
+.analogy-box .alabel{font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:5px}
+.analogy-box .atext{font-size:13px;color:var(--text);line-height:1.7;font-style:italic}
+.intro-text{color:var(--text2);font-size:14px;line-height:1.8;margin-bottom:1.5rem}
+
+/* SECTIONS */
+.section-card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.section-toggle{width:100%;background:transparent;border:none;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:var(--mono)}
+.section-toggle .stitle{font-weight:700;font-size:14px}
+.section-toggle .sarrow{color:var(--text3);font-size:14px;transition:transform .2s}
+.section-toggle.open .sarrow{transform:rotate(90deg)}
+.section-body{padding:0 18px 18px;border-top:1px solid var(--border)}
+.section-content{color:var(--text2);font-size:13px;line-height:1.8;margin-top:14px}
+.formula-box{background:var(--bg);border:1px solid var(--border);border-left:3px solid var(--purple);border-radius:8px;padding:12px 16px;margin:12px 0}
+.formula-box .flabel{font-size:10px;color:var(--purple);font-weight:700;letter-spacing:1.5px;margin-bottom:7px}
+.formula-box pre{color:var(--cyan);font-family:var(--mono);font-size:12px;white-space:pre-wrap;line-height:1.7}
+.example-box{border-radius:8px;padding:12px 16px;margin:12px 0}
+.example-box .elabel{font-size:10px;font-weight:700;letter-spacing:1.5px;margin-bottom:7px}
+.example-box pre{font-family:var(--mono);font-size:12px;white-space:pre-wrap;line-height:1.7}
+
+/* FLASHCARDS */
+.flash-wrapper{margin:1.25rem 0}
+.flashcard{background:var(--bg3);border:2px solid var(--border);border-radius:14px;padding:2rem;text-align:center;min-height:160px;display:flex;flex-direction:column;justify-content:center;transition:all .3s;cursor:pointer}
+.flashcard:hover{background:var(--bg4)}
+.flashcard .fc-front{font-size:16px;font-weight:700;margin-bottom:10px}
+.flashcard .fc-back{font-size:13px;color:var(--text2);line-height:1.6}
+.flash-controls{display:flex;justify-content:center;align-items:center;gap:12px;margin-top:10px}
+.flash-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:6px 16px;color:var(--text2);cursor:pointer;font-family:var(--mono);font-size:12px;transition:all .15s}
+.flash-btn:hover{border-color:var(--cyan);color:var(--cyan)}
+.flash-counter{color:var(--text3);font-size:12px}
+
+/* QUIZ */
+.quiz-section{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1.5rem;margin-top:1.5rem}
+.quiz-title{font-size:14px;font-weight:700;margin-bottom:1.25rem}
+.quiz-q{margin-bottom:1.25rem}
+.quiz-q .qtext{font-size:13px;color:var(--text);margin-bottom:.6rem;font-weight:500;line-height:1.6}
+.quiz-opts{display:flex;flex-direction:column;gap:6px}
+.opt-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:8px 14px;color:var(--text2);cursor:pointer;text-align:left;font-family:var(--mono);font-size:12px;transition:all .15s}
+.opt-btn:hover:not([disabled]){background:rgba(0,212,255,0.06);border-color:var(--cyan);color:var(--text)}
+.opt-btn.selected{background:rgba(0,212,255,0.08);border-color:var(--cyan);color:var(--text)}
+.opt-btn.correct{background:rgba(16,185,129,0.12);border-color:var(--green);color:var(--green)}
+.opt-btn.wrong{background:rgba(239,68,68,0.08);border-color:var(--red);color:var(--red)}
+.quiz-submit{background:var(--cyan);color:#000;border:none;border-radius:7px;padding:8px 22px;font-weight:700;font-family:var(--mono);font-size:13px;cursor:pointer;transition:all .2s;margin-top:.25rem}
+.quiz-submit:hover{background:#00aacc}
+.quiz-submit:disabled{opacity:.4;cursor:not-allowed}
+.quiz-result{display:flex;align-items:center;gap:12px;margin-top:.5rem}
+.result-score{font-size:15px;font-weight:700}
+.retry-btn{background:transparent;border:1px solid var(--border);border-radius:6px;padding:5px 14px;color:var(--text3);cursor:pointer;font-family:var(--mono);font-size:11px}
+.retry-btn:hover{border-color:var(--border2);color:var(--text2)}
+
+/* TOOLBAR BTNS */
+.tool-row{display:flex;gap:10px;flex-wrap:wrap;margin:1rem 0}
+.tool-btn{background:transparent;border:1px solid var(--border);border-radius:7px;padding:7px 16px;font-family:var(--mono);font-size:12px;cursor:pointer;transition:all .2s}
+.tool-btn:hover{background:var(--bg4)}
+.tool-btn.active-btn{font-weight:700}
+
+/* SUBNET CALC */
+.calc-wrapper{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:1.5rem 0}
+.calc-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.calc-header h3{font-size:14px;font-weight:700;color:var(--amber)}
+.calc-body{padding:1.5rem}
+.calc-inputs{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:1rem}
+.calc-field{flex:1;min-width:160px}
+.calc-field label{display:block;font-size:11px;color:var(--text2);margin-bottom:5px}
+.calc-field input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;transition:border .2s}
+.calc-field input:focus{border-color:var(--cyan)}
+.calc-field .prefix-wrap{display:flex;align-items:center;gap:5px}
+.calc-field .prefix-wrap span{color:var(--cyan);font-size:18px;font-weight:700}
+.calc-field .prefix-wrap input{flex:1}
+.calc-btn{background:var(--cyan);color:#000;border:none;border-radius:7px;padding:9px 22px;font-weight:700;font-family:var(--mono);font-size:13px;cursor:pointer;align-self:flex-end;height:38px;transition:all .2s}
+.calc-btn:hover{background:#00aacc}
+.calc-results{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin-bottom:1rem}
+.calc-result-card{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.calc-result-card .rlabel{font-size:10px;color:var(--text3);margin-bottom:4px}
+.calc-result-card .rval{font-family:var(--mono);font-size:13px;font-weight:700}
+.binary-breakdown{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:.5rem}
+.binary-breakdown .blabel{font-size:10px;color:var(--text3);letter-spacing:1.5px;margin-bottom:8px}
+.binary-breakdown .bline{font-family:var(--mono);font-size:12px;line-height:2;margin-bottom:4px}
+.net-bit{color:var(--green)}
+.host-bit{color:var(--red)}
+.dot-bit{color:var(--text3)}
+.binary-legend{display:flex;gap:16px;margin-top:8px;font-size:11px}
+.binary-legend span{display:flex;align-items:center;gap:4px}
+.l-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* CIDR TABLE */
+.cidr-table-wrap{background:var(--bg3);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:1.5rem 0}
+.cidr-table-header{padding:14px 20px;border-bottom:1px solid var(--border)}
+.cidr-table-header h3{font-size:14px;font-weight:700;color:var(--green)}
+table.cidr-table{width:100%;border-collapse:collapse;font-size:12px}
+table.cidr-table thead tr{border-bottom:1px solid var(--border)}
+table.cidr-table th{padding:8px 14px;color:var(--cyan);text-align:left;font-size:11px;letter-spacing:.5px}
+table.cidr-table td{padding:6px 14px;border-bottom:1px solid rgba(30,45,69,.5)}
+table.cidr-table tbody tr:hover{background:var(--bg4)}
+.highlight-row{background:rgba(0,212,255,.05)!important}
+
+/* DIAGRAMS */
+.diagram{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin:1rem 0;overflow-x:auto}
+.diagram-title{font-size:11px;color:var(--text3);letter-spacing:1.5px;margin-bottom:14px;text-transform:uppercase}
+.flow-row{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.flow-node{background:var(--bg2);border:1px solid var(--border2);border-radius:7px;padding:7px 12px;font-size:11px;white-space:nowrap;text-align:center;min-width:80px}
+.flow-arrow{color:var(--text3);font-size:16px;flex-shrink:0}
+.dora-step{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.dora-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.dora-info .dname{font-size:13px;font-weight:700;margin-bottom:2px}
+.dora-info .ddesc{font-size:11px;color:var(--text2);line-height:1.5}
+
+/* ROUTING VISUAL */
+.routing-graph{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding:1rem}
+.rnode{background:var(--bg2);border:2px solid var(--border2);border-radius:50%;width:60px;height:60px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;margin:auto;transition:all .3s}
+.rnode.active{border-color:var(--cyan);color:var(--cyan);box-shadow:0 0 16px rgba(0,212,255,.2)}
+.redge{position:relative;text-align:center;font-size:11px;color:var(--text3)}
+
+/* NAT DIAGRAM */
+.nat-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.nat-device{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:11px}
+.nat-arrow-label{font-size:10px;color:var(--text3);text-align:center}
+.nat-section{font-size:10px;color:var(--text3);letter-spacing:1px;margin-bottom:4px;text-transform:uppercase}
+
+/* TOOLTIP */
+.tooltip-wrap{position:relative;display:inline}
+.tooltip-wrap .tt{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);background:var(--bg4);color:var(--text);padding:6px 10px;border-radius:6px;font-size:11px;white-space:nowrap;z-index:200;border:1px solid var(--border);margin-bottom:4px;box-shadow:0 4px 16px rgba(0,0,0,.6);opacity:0;pointer-events:none;transition:opacity .15s}
+.tooltip-wrap:hover .tt{opacity:1}
+.tooltip-wrap .tw{border-bottom:1px dashed var(--cyan);cursor:help}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.page.active{animation:fadeIn .3s ease}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+.pulsing{animation:pulse 2s infinite}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  #sidebar.open{width:200px}
+  #sidebar-inner{width:200px}
+  .calc-inputs{flex-direction:column}
+  .flow-row{gap:3px}
+  .flow-node{min-width:65px;font-size:10px;padding:5px 8px}
+}
+
+/* SCROLL ANIMATIONS */
+.fade-in-section{opacity:0;transform:translateY(16px);transition:opacity .4s ease,transform .4s ease}
+.fade-in-section.visible{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<div id="navbar">
+  <button id="nav-toggle" onclick="toggleSidebar()">☰</button>
+  <button id="nav-brand" onclick="showPage('home')">NetLearn <span>v2.0</span></button>
+  <div id="nav-right">
+    <span id="nav-progress-label">0/11 done</span>
+    <div id="nav-progress-bar"><div id="nav-progress-fill"></div></div>
+  </div>
+</div>
+
+<div id="app">
+  <div id="sidebar">
+    <div id="sidebar-inner">
+      <div class="sidebar-section">Navigate</div>
+      <button class="sidebar-btn active" id="sb-home" onclick="showPage('home')">🏠 <span>Home</span></button>
+      <div class="sidebar-section" style="margin-top:12px">Topics</div>
+      <button class="sidebar-btn" id="sb-switching" onclick="showPage('switching')">⇄ <span>Switching & Bridging</span><span class="check" id="ck-switching"></span></button>
+      <button class="sidebar-btn" id="sb-ip" onclick="showPage('ip')">◉ <span>Internet Protocol</span><span class="check" id="ck-ip"></span></button>
+      <button class="sidebar-btn" id="sb-ipaddr" onclick="showPage('ipaddr')">⊞ <span>IP Addressing</span><span class="check" id="ck-ipaddr"></span></button>
+      <button class="sidebar-btn" id="sb-cidr" onclick="showPage('cidr')">⌥ <span>CIDR</span><span class="check" id="ck-cidr"></span></button>
+      <button class="sidebar-btn" id="sb-subnetting" onclick="showPage('subnetting')">⊟ <span>Subnetting</span><span class="check" id="ck-subnetting"></span></button>
+      <button class="sidebar-btn" id="sb-supernetting" onclick="showPage('supernetting')">⊕ <span>Supernetting</span><span class="check" id="ck-supernetting"></span></button>
+      <button class="sidebar-btn" id="sb-nat" onclick="showPage('nat')">↔ <span>NAT</span><span class="check" id="ck-nat"></span></button>
+      <button class="sidebar-btn" id="sb-arp" onclick="showPage('arp')">⇌ <span>ARP</span><span class="check" id="ck-arp"></span></button>
+      <button class="sidebar-btn" id="sb-dhcp" onclick="showPage('dhcp')">⊛ <span>DHCP</span><span class="check" id="ck-dhcp"></span></button>
+      <button class="sidebar-btn" id="sb-icmp" onclick="showPage('icmp')">⚡ <span>ICMP</span><span class="check" id="ck-icmp"></span></button>
+      <button class="sidebar-btn" id="sb-routing" onclick="showPage('routing')">⬡ <span>Routing Algorithms</span><span class="check" id="ck-routing"></span></button>
+      <div class="sidebar-section" style="margin-top:12px">Tools</div>
+      <button class="sidebar-btn" id="sb-tools" onclick="showPage('tools')">⚙ <span>Subnet Tools</span></button>
+    </div>
+  </div>
+
+  <div id="main">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div id="home-hero">
+        <div class="tag">Unit II — Internetworking</div>
+        <h1>Network <span class="hl">Protocols</span><br>&amp; Algorithms</h1>
+        <p>An interactive learning platform covering TCP/IP, routing, addressing, and more — with visualizations, quizzes, and real-world tools.</p>
+        <div id="home-progress">
+          <div class="progress-row"><span>Overall Progress</span><span id="pct-label">0%</span></div>
+          <div class="pbar"><div class="pbar-fill" id="home-pbar" style="background:var(--cyan);width:0%"></div></div>
+          <div id="home-sub">0 of 11 topics visited</div>
+        </div>
+      </div>
+      <div id="topic-grid">
+        <button class="topic-card" onclick="showPage('switching')" style="--tc:#00d4ff">
+          <span class="icon">⇄</span><div class="name" style="color:#00d4ff">Switching &amp; Bridging</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-switching" style="display:none;background:rgba(0,212,255,.12);color:#00d4ff">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('ip')" style="--tc:#7c3aed">
+          <span class="icon">◉</span><div class="name" style="color:#7c3aed">Internet Protocol</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-ip" style="display:none;background:rgba(124,58,237,.12);color:#7c3aed">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('ipaddr')" style="--tc:#10b981">
+          <span class="icon">⊞</span><div class="name" style="color:#10b981">IP Addressing</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-ipaddr" style="display:none;background:rgba(16,185,129,.12);color:#10b981">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('cidr')" style="--tc:#f59e0b">
+          <span class="icon">⌥</span><div class="name" style="color:#f59e0b">CIDR</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-cidr" style="display:none;background:rgba(245,158,11,.12);color:#f59e0b">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('subnetting')" style="--tc:#ef4444">
+          <span class="icon">⊟</span><div class="name" style="color:#ef4444">Subnetting</div>
+          <div class="meta">3 sections • Interactive Calc</div>
+          <span class="done-badge" id="hb-subnetting" style="display:none;background:rgba(239,68,68,.12);color:#ef4444">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('supernetting')" style="--tc:#ec4899">
+          <span class="icon">⊕</span><div class="name" style="color:#ec4899">Supernetting</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-supernetting" style="display:none;background:rgba(236,72,153,.12);color:#ec4899">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('nat')" style="--tc:#06b6d4">
+          <span class="icon">↔</span><div class="name" style="color:#06b6d4">NAT</div>
+          <div class="meta">3 sections • Diagram</div>
+          <span class="done-badge" id="hb-nat" style="display:none;background:rgba(6,182,212,.12);color:#06b6d4">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('arp')" style="--tc:#84cc16">
+          <span class="icon">⇌</span><div class="name" style="color:#84cc16">ARP</div>
+          <div class="meta">3 sections • Flow diagram</div>
+          <span class="done-badge" id="hb-arp" style="display:none;background:rgba(132,204,22,.12);color:#84cc16">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('dhcp')" style="--tc:#f97316">
+          <span class="icon">⊛</span><div class="name" style="color:#f97316">DHCP</div>
+          <div class="meta">3 sections • DORA visual</div>
+          <span class="done-badge" id="hb-dhcp" style="display:none;background:rgba(249,115,22,.12);color:#f97316">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('icmp')" style="--tc:#a855f7">
+          <span class="icon">⚡</span><div class="name" style="color:#a855f7">ICMP</div>
+          <div class="meta">3 sections • Quiz included</div>
+          <span class="done-badge" id="hb-icmp" style="display:none;background:rgba(168,85,247,.12);color:#a855f7">✓ DONE</span>
+        </button>
+        <button class="topic-card" onclick="showPage('routing')" style="--tc:#14b8a6">
+          <span class="icon">⬡</span><div class="name" style="color:#14b8a6">Routing Algorithms</div>
+          <div class="meta">4 sections • Visualizations</div>
+          <span class="done-badge" id="hb-routing" style="display:none;background:rgba(20,184,166,.12);color:#14b8a6">✓ DONE</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- SWITCHING PAGE -->
+    <div class="page" id="page-switching">
+      <div class="page-header">
+        <span class="topic-icon">⇄</span>
+        <h2 style="color:#00d4ff">Switching &amp; Bridging</h2>
+        <div class="analogy-box" style="background:rgba(0,212,255,.07);border:1px solid rgba(0,212,255,.2)">
+          <div class="alabel" style="color:#00d4ff">💡 ANALOGY</div>
+          <div class="atext">A switch is like a smart post office that remembers which mailbox belongs to which address — no wasted deliveries to everyone!</div>
+        </div>
+      </div>
+      <p class="intro-text">Switching and bridging are Layer 2 technologies that intelligently forward frames within a network. Unlike hubs (which broadcast to everyone), switches learn which devices are on which ports and deliver frames only to the intended recipient — dramatically reducing unnecessary network traffic.</p>
+
+      <div id="sections-switching">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#00d4ff">Circuit Switching</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">A dedicated communication path is established for the entire duration of a session. Used in traditional telephone networks. Resources are reserved end-to-end — even if no data is being sent, the path is held open and unavailable to others.</div>
+            <div class="formula-box"><div class="flabel">FORMULA / KEY POINTS</div><pre>Efficiency = (Actual transmission time) / (Total connection time)
+Total delay = Setup delay + Propagation delay + Transmission delay
+Resource utilization = Often &lt; 50% (path idle during pauses)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Traditional PSTN phone calls: when you dial, a circuit is
+   established through exchanges all the way to the recipient
+   before any voice is even transmitted.
+
+2. ISDN (Integrated Services Digital Network) — digital circuit
+   switching used before broadband internet became common.
+
+3. T1/E1 leased lines: dedicated circuits between offices,
+   24/30 channels always reserved whether used or not.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#00d4ff">Packet Switching</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Data is broken into packets that travel independently across the network. Each packet may take a different route and arrive out of order. Resources are shared — far more efficient than circuit switching. The Internet is fundamentally a packet-switched network.</div>
+            <div class="formula-box"><div class="flabel">FORMULA / KEY POINTS</div><pre>Total delay = Propagation + Transmission + Queuing + Processing
+Store-and-forward: node receives entire packet before forwarding
+Cut-through: forward as soon as destination MAC is read</pre></div>
+            <div class="diagram">
+              <div class="diagram-title">Packet switching flow</div>
+              <div class="flow-row">
+                <div class="flow-node" style="border-color:#00d4ff;color:#00d4ff">Source<br>Host</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node">Packet<br>Creation</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node" style="border-color:#7c3aed;color:#7c3aed">Router 1</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node" style="border-color:#7c3aed;color:#7c3aed">Router 2</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node">Reassemble</div>
+                <span class="flow-arrow">→</span>
+                <div class="flow-node" style="border-color:#10b981;color:#10b981">Dest<br>Host</div>
+              </div>
+            </div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Email — breaks message into packets, each finds its own route.
+
+2. Web browsing (HTTP/HTTPS) — each HTML, CSS, JS file arrives
+   in packets that the browser reassembles.
+
+3. YouTube streaming — video arrives in thousands of IP packets.
+   Your device buffers and reorders them for smooth playback.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#00d4ff">Bridges &amp; Switches (Layer 2)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">A bridge connects two LAN segments filtering traffic by MAC address. A switch is a multi-port bridge with hardware ASICs for wire-speed switching. Switches build a MAC Address Table (CAM table) — mapping MAC addresses to physical ports. Unknown destinations get flooded; known ones get unicast-forwarded.</div>
+            <div class="formula-box"><div class="flabel">SWITCH LEARNING ALGORITHM</div><pre>On receiving frame from port P with source MAC M:
+  → Add/refresh entry: CAM[M] = P (with timestamp)
+  
+On forwarding frame to destination MAC D:
+  → If CAM[D] exists → forward only to that port
+  → If CAM[D] unknown → flood to ALL ports except source
+  → If D = FF:FF:FF:FF:FF:FF → flood (broadcast)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. 48-port switch: PC-A (port 3) → PC-B (port 15)
+   Switch forwards ONLY to port 15, not all 48 ports.
+
+2. New device plugged in: MAC not in table → switch floods
+   first frame, learns MAC from reply, future frames unicast.
+
+3. show mac address-table (Cisco):
+   Vlan  Mac Address        Type    Ports
+   1     00a1.2b3c.4d5e   DYNAMIC  Gi0/1</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-switching" onclick="toggleFlash('switching')" style="border-color:#00d4ff;color:#00d4ff">📚 Flashcards</button>
+      </div>
+      <div id="flash-switching" style="display:none">
+        <div class="flash-wrapper" id="flashwrap-switching"></div>
+      </div>
+      <div class="quiz-section" id="quiz-switching"></div>
+    </div>
+
+    <!-- IP PAGE -->
+    <div class="page" id="page-ip">
+      <div class="page-header">
+        <span class="topic-icon">◉</span>
+        <h2 style="color:#7c3aed">Internet Protocol (IP)</h2>
+        <div class="analogy-box" style="background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.25)">
+          <div class="alabel" style="color:#7c3aed">💡 ANALOGY</div>
+          <div class="atext">IP is like the postal system's addressing standard — it defines the format of the address on every envelope (packet) traveling through the internet. Without it, nobody would know where to deliver anything.</div>
+        </div>
+      </div>
+      <p class="intro-text">IP (Internet Protocol) is the principal communications protocol for relaying datagrams (packets) across network boundaries. It provides logical addressing, routing capability, and fragmentation of oversized data. IP is connectionless — each packet is routed independently.</p>
+
+      <div id="sections-ip">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#7c3aed">IPv4 Header Structure</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">The IPv4 header is 20–60 bytes containing critical routing and control information. Key fields: Version (4 bits), IHL (4 bits — header length in 32-bit words), DSCP/QoS (6 bits), Total Length (16 bits), Identification (16 bits — for fragmentation), Flags (3 bits), Fragment Offset (13 bits), TTL (8 bits), Protocol (8 bits), Header Checksum (16 bits), Source &amp; Destination IP (32 bits each).</div>
+            <div class="formula-box"><div class="flabel">KEY CALCULATIONS</div><pre>Max IPv4 packet size     = 65,535 bytes
+Header size (min)        = 20 bytes (IHL=5, 5×4=20)
+Data payload             = Total Length − (IHL × 4)
+TTL field (time to live) = decremented at each router hop
+Protocol field values    = 6 (TCP), 17 (UDP), 1 (ICMP)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Packet: Src=192.168.1.10, Dst=8.8.8.8, TTL=64, Proto=1(ICMP)
+   At each router: TTL decrements. At TTL=0 → discard + send
+   ICMP Type 11 (Time Exceeded) back to source.
+
+2. IHL=6 means: header = 6×4 = 24 bytes (has IP options).
+   Options used for: timestamps, source routing, record route.
+
+3. Total Length=1500, IHL=5 → payload = 1500-20 = 1480 bytes
+   (typical MTU-sized packet on Ethernet)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#7c3aed">IP Fragmentation &amp; Reassembly</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">When a packet is larger than the MTU (Maximum Transmission Unit) of the next network link, IP fragments it. Each fragment carries the same Identification field but has a Fragment Offset showing its position in the original datagram. The DF (Don't Fragment) bit prevents fragmentation. MF (More Fragments) bit is set on all but the last fragment. Reassembly happens only at the final destination.</div>
+            <div class="formula-box"><div class="flabel">FRAGMENTATION FORMULAS</div><pre>Fragment Offset = (start byte position of fragment) / 8
+Number of fragments = ⌈Data length / (MTU − Header)⌉
+
+Example: MTU=1500, data=3000 bytes, header=20 bytes
+  Max data per fragment = 1500 − 20 = 1480 bytes
+  Fragment 1: bytes 0–1479,   offset = 0/8 = 0
+  Fragment 2: bytes 1480–2959, offset = 1480/8 = 185
+  Fragment 3: bytes 2960–2999, offset = 2960/8 = 370</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Path MTU Discovery (PMTUD): Send DF=1, if "Frag Needed"
+   ICMP received, reduce packet size. Used by TCP/QUIC.
+
+2. VPN tunnels reduce effective MTU (overhead added), causing
+   fragmentation if not handled → TCP MSS clamping fixes this.
+
+3. IPv6 eliminates router fragmentation entirely — sources must
+   discover path MTU and fragment before sending.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#7c3aed">IPv4 vs IPv6 Comparison</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">IPv4 uses 32-bit addresses providing ~4.3 billion unique addresses — exhausted in 2011. IPv6 uses 128-bit addresses providing 340 undecillion. IPv6 also removes fragmentation at routers, simplifies the header (fixed 40 bytes), builds in IPSec, eliminates broadcast (uses multicast), and uses neighbor discovery instead of ARP.</div>
+            <div class="formula-box"><div class="flabel">ADDRESS SPACE</div><pre>IPv4: 2³²  = 4,294,967,296 addresses
+IPv6: 2¹²⁸ = 3.4 × 10³⁸ addresses
+
+IPv4 notation: 192.168.1.1  (dotted decimal, 4 octets)
+IPv6 notation: 2001:0db8:85a3::8a2e:0370:7334
+  (8 groups of 16-bit hex, :: compresses consecutive zeros)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Full IPv6:  2001:0db8:0000:0000:0000:0000:0000:0001
+   Compressed: 2001:db8::1  (leading zeros + :: for all-zeros)
+
+2. IPv6 loopback: ::1  (equivalent to IPv4's 127.0.0.1)
+
+3. IPv6 link-local: fe80::/10 — auto-configured on every
+   interface, only valid on local segment (like 169.254.x.x)</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-ip" onclick="toggleFlash('ip')" style="border-color:#7c3aed;color:#7c3aed">📚 Flashcards</button>
+      </div>
+      <div id="flash-ip" style="display:none"><div class="flash-wrapper" id="flashwrap-ip"></div></div>
+      <div class="quiz-section" id="quiz-ip"></div>
+    </div>
+
+    <!-- IP ADDRESSING PAGE -->
+    <div class="page" id="page-ipaddr">
+      <div class="page-header">
+        <span class="topic-icon">⊞</span>
+        <h2 style="color:#10b981">IP Addressing</h2>
+        <div class="analogy-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.25)">
+          <div class="alabel" style="color:#10b981">💡 ANALOGY</div>
+          <div class="atext">An IP address is like a postal address: the network portion is your city/street, and the host portion is your specific house number. Routers are like the regional sorting offices.</div>
+        </div>
+      </div>
+      <p class="intro-text">IP addresses are 32-bit numbers (IPv4) that uniquely identify interfaces on a network. Written in dotted-decimal notation (e.g., 192.168.1.10), they consist of a network portion (common to all hosts in the network) and a host portion (unique per device). A subnet mask separates the two parts.</p>
+
+      <div id="sections-ipaddr">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#10b981">Classful Addressing (Legacy)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Originally IP addresses were divided into five classes determined by the leading bits. Classes A, B, C are for unicast; D for multicast; E is reserved. This system was wasteful — a company needing 1000 hosts had to get a Class B (65,534 hosts), wasting 64,000+ addresses. CIDR replaced classful addressing in 1993.</div>
+            <div class="formula-box"><div class="flabel">CLASS RANGES &amp; DEFAULTS</div><pre>Class A: 1.0.0.0  – 126.255.255.255   /8   16,777,214 hosts
+Class B: 128.0.0.0– 191.255.255.255   /16  65,534 hosts
+Class C: 192.0.0.0– 223.255.255.255   /24  254 hosts
+Class D: 224.0.0.0– 239.255.255.255   Multicast
+Class E: 240.0.0.0– 255.255.255.255   Reserved
+Note: 127.x.x.x is reserved for loopback (not Class A usable)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Company A (large): gets 10.0.0.0/8 (Class A) = 16M addresses
+   Company B (small): needs 1000 hosts but must get Class B
+   = 65,534 addresses. Wastes 64,500+ addresses!
+
+2. Class B leading bits: 10xxxxxx xxxxxxxx . . .
+   First two bits "10" → 128.0.0.0 to 191.255.255.255
+
+3. Class D (224.0.0.1): all-routers multicast
+   OSPF hello packets sent to 224.0.0.5 (all OSPF routers)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#10b981">Special IP Addresses (RFC 1918)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Certain IP ranges are reserved. Private ranges (RFC 1918) are not routed on the public internet — used freely inside organizations with NAT. Link-local (169.254.x.x / APIPA) is auto-assigned when no DHCP is available. The loopback range (127.x.x.x) stays within the local device's IP stack.</div>
+            <div class="formula-box"><div class="flabel">RESERVED RANGES</div><pre>Private (RFC 1918) — not routed on internet:
+  10.0.0.0/8       (Class A private) — 16.7M addresses
+  172.16.0.0/12    (Class B private) — 1.05M addresses
+  192.168.0.0/16   (Class C private) — 65,536 addresses
+  
+Special:
+  127.0.0.0/8      Loopback (127.0.0.1 most common)
+  169.254.0.0/16   Link-local / APIPA (no DHCP available)
+  0.0.0.0/8        "This network" (unspecified)
+  255.255.255.255  Limited broadcast</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Home WiFi: router assigns 192.168.1.x to devices.
+   These never appear on public internet — NAT translates them.
+
+2. curl http://127.0.0.1:3000 — connects to local webserver,
+   never leaves your machine (loopback interface lo0).
+
+3. APIPA: Windows PC can't reach DHCP server →
+   auto-assigns 169.254.x.x, can still talk to other APIPA hosts.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#10b981">Subnet Mask &amp; Network Address Math</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">A subnet mask is a 32-bit number with consecutive 1s followed by 0s. The 1s identify the network bits, 0s identify host bits. ANDing an IP address with its mask produces the network address. The broadcast address has all host bits set to 1. Hosts can use addresses between network+1 and broadcast-1.</div>
+            <div class="formula-box"><div class="flabel">NETWORK ADDRESS CALCULATION</div><pre>Network address = IP AND Subnet Mask   (bitwise AND)
+Broadcast       = Network OR (NOT Mask) (all host bits = 1)
+Usable hosts    = 2^(host_bits) − 2
+
+Example: IP=192.168.10.55, Mask=255.255.255.0 (/24)
+  192.168.10.55  → 11000000.10101000.00001010.00110111
+  255.255.255.0  → 11111111.11111111.11111111.00000000
+  AND result     → 11000000.10101000.00001010.00000000
+  Network        = 192.168.10.0
+  Broadcast      = 192.168.10.255
+  Usable range   = 192.168.10.1 – 192.168.10.254 (254 hosts)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. /30: mask=255.255.255.252, hosts=2^2-2=2 (router links)
+2. /16: mask=255.255.0.0, hosts=2^16-2=65,534
+3. Is 10.0.0.5 in network 10.0.0.0/24?
+   10.0.0.5 AND 255.255.255.0 = 10.0.0.0 ✓ Yes!</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-ipaddr" onclick="toggleFlash('ipaddr')" style="border-color:#10b981;color:#10b981">📚 Flashcards</button>
+      </div>
+      <div id="flash-ipaddr" style="display:none"><div class="flash-wrapper" id="flashwrap-ipaddr"></div></div>
+      <div class="quiz-section" id="quiz-ipaddr"></div>
+    </div>
+
+    <!-- CIDR PAGE -->
+    <div class="page" id="page-cidr">
+      <div class="page-header">
+        <span class="topic-icon">⌥</span>
+        <h2 style="color:#f59e0b">CIDR — Classless Inter-Domain Routing</h2>
+        <div class="analogy-box" style="background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.25)">
+          <div class="alabel" style="color:#f59e0b">💡 ANALOGY</div>
+          <div class="atext">CIDR is like custom-sized plot allotments — instead of only large, medium, or small fixed sizes, you can carve out exactly the land you need: /30 for 2 hosts, /22 for 1000 hosts.</div>
+        </div>
+      </div>
+      <p class="intro-text">CIDR (1993) replaced classful addressing and allows flexible allocation of IP blocks. A CIDR block is written as IP/prefix-length (e.g., 192.168.1.0/24). The prefix length indicates how many leading bits define the network — enabling efficient allocation and route aggregation.</p>
+
+      <div id="sections-cidr">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f59e0b">CIDR Notation &amp; Block Sizes</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">The /n prefix specifies network bits. The remaining (32−n) bits are for hosts. Block size doubles for each step down in prefix. ISPs use CIDR to give customers exactly what they need — no more wasteful Class A/B/C allocations. IANA allocates large blocks to RIRs, which allocate to ISPs, which sub-allocate to customers.</div>
+            <div class="formula-box"><div class="flabel">BLOCK SIZE FORMULA</div><pre>Block size    = 2^(32 − prefix_length)
+Usable hosts  = 2^(32 − prefix_length) − 2
+
+/24 → 2^8  = 256 addresses, 254 hosts
+/23 → 2^9  = 512 addresses, 510 hosts  (2× /24)
+/22 → 2^10 = 1024 addresses, 1022 hosts (4× /24)
+/16 → 2^16 = 65,536 addresses, 65,534 hosts
+/8  → 2^24 = 16,777,216 addresses</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. ISP 200.10.0.0/16 → Customer A: 200.10.0.0/24 (256 addrs)
+   Customer B: 200.10.1.0/23 (512), Customer C: 200.10.4.0/22
+
+2. Point-to-point link: only need 2 IPs → assign /30
+   200.0.0.0/30: .0=network, .1=router1, .2=router2, .3=bcast
+
+3. /26 gives 64 addresses (62 usable). Valid /26 starts:
+   .0, .64, .128, .192 (multiples of 64)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f59e0b">Route Aggregation</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">CIDR allows combining multiple contiguous blocks into a single routing entry — reducing routing table size. This is called route aggregation or summarization. ISPs aggregate customer routes before advertising to the internet backbone, preventing routing table explosion.</div>
+            <div class="formula-box"><div class="flabel">AGGREGATION ALGORITHM</div><pre>To aggregate n contiguous /k networks into one entry:
+1. All networks must share same first (k − log₂n) bits
+2. First network address must be divisible by n × 2^(32−k)
+3. New prefix = k − log₂n
+
+Example: 200.10.0.0/24, 200.10.1.0/24, 200.10.2.0/24, 200.10.3.0/24
+→ 4 networks, n=4, log₂4=2
+→ New prefix = 24 − 2 = /22
+→ Aggregate: 200.10.0.0/22 ✓</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Can we aggregate 172.16.0.0/24 and 172.16.2.0/24?
+   NOT contiguous (gap at 172.16.1.0) → Cannot aggregate!
+
+2. 192.168.0.0/24 + 192.168.1.0/24 → 192.168.0.0/23 ✓
+   (starts at .0, divisible by 512 ✓, contiguous ✓)
+
+3. ISP advertising 200.1.0.0/16 to internet covers all 256
+   /24 customer blocks — one routing entry instead of 256!</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f59e0b">Longest Prefix Match</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">When a router has multiple matching routes for a destination, it chooses the most specific one — the entry with the longest prefix length. This is the fundamental forwarding rule in CIDR-based routing. Without it, aggregation would prevent specific routes from working correctly.</div>
+            <div class="formula-box"><div class="flabel">LONGEST PREFIX MATCH RULE</div><pre>For destination D, select route R where:
+  1. D's network bits match R's network/prefix
+  2. R has the maximum prefix length of all matching routes
+
+Routing Table:
+  0.0.0.0/0    → Router-Internet (default route)
+  10.0.0.0/8   → Router-Corp
+  10.10.0.0/16 → Router-Dept
+  10.10.5.0/24 → Router-Lab
+
+Packet to 10.10.5.55:
+  Matches /0, /8, /16, /24 → Choose /24 (longest!)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Default route 0.0.0.0/0 matches EVERYTHING but is always
+   overridden by any more specific route (shortest prefix wins
+   only if nothing else matches).
+
+2. Blackhole route: add 10.0.0.0/8 → null0, then advertise
+   10.0.1.0/24 → valid next-hop. Traffic to unused space dropped.
+
+3. BGP uses longest prefix match extensively — ISPs inject more
+   specific prefixes to influence traffic engineering.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-cidr" onclick="toggleFlash('cidr')" style="border-color:#f59e0b;color:#f59e0b">📚 Flashcards</button>
+      </div>
+      <div id="flash-cidr" style="display:none"><div class="flash-wrapper" id="flashwrap-cidr"></div></div>
+      <div class="quiz-section" id="quiz-cidr"></div>
+    </div>
+
+    <!-- SUBNETTING PAGE -->
+    <div class="page" id="page-subnetting">
+      <div class="page-header">
+        <span class="topic-icon">⊟</span>
+        <h2 style="color:#ef4444">Subnetting</h2>
+        <div class="analogy-box" style="background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.25)">
+          <div class="alabel" style="color:#ef4444">💡 ANALOGY</div>
+          <div class="atext">Subnetting is like dividing a large apartment building (network) into floors (subnets) — residents on the same floor communicate directly; cross-floor communication goes through the building manager (router).</div>
+        </div>
+      </div>
+      <p class="intro-text">Subnetting divides a single large network into smaller sub-networks, improving security, performance, and address efficiency. Each subnet has its own network address, broadcast address, and range of usable hosts. Devices in different subnets must communicate through a router.</p>
+
+      <div id="sections-subnetting">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ef4444">How Subnetting Works</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">We borrow bits from the host portion of an IP address to create subnet IDs. Each borrowed bit doubles the number of subnets but halves the hosts per subnet. This is a fundamental tradeoff: more subnets = fewer hosts per subnet. The subnet mask is extended by the number of borrowed bits.</div>
+            <div class="formula-box"><div class="flabel">SUBNETTING FORMULAS</div><pre>Subnets created   = 2^s     (s = borrowed bits)
+Hosts per subnet  = 2^h − 2 (h = remaining host bits)
+New mask          = Original prefix + s bits
+
+Example: 192.168.1.0/24, borrow 3 bits:
+  Original host bits = 8, borrow s=3, remaining h=5
+  Subnets  = 2^3 = 8
+  New mask = /27  (255.255.255.224)
+  Hosts    = 2^5 − 2 = 30 per subnet</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. 10.0.0.0/8, borrow 8 bits → /16, 256 subnets × 65,534 hosts
+2. 172.16.0.0/16, borrow 4 bits → /20, 16 subnets × 4,094 hosts
+3. 192.168.5.0/24, borrow 6 bits → /30, 64 subnets × 2 hosts
+   (perfect for router point-to-point links!)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ef4444">Calculating Subnet Ranges</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">The block size is the increment between consecutive subnets. It equals 256 minus the mask value in the interesting octet (the last non-zero octet). List all subnets by repeatedly adding the block size. First address in each block = network, last = broadcast, in-between = usable hosts.</div>
+            <div class="formula-box"><div class="flabel">BLOCK SIZE METHOD</div><pre>Block size = 256 − (interesting octet mask value)
+          = 2^(host bits in that octet)
+
+/27 → mask byte = 224 → block = 256−224 = 32
+Subnets of 192.168.1.0/27:
+  Subnet 0: Net=.0,   Hosts=.1–.30,   Bcast=.31
+  Subnet 1: Net=.32,  Hosts=.33–.62,  Bcast=.63
+  Subnet 2: Net=.64,  Hosts=.65–.94,  Bcast=.95
+  Subnet 3: Net=.96,  Hosts=.97–.126, Bcast=.127
+  ... (8 subnets total)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Is 192.168.1.70 in subnet 192.168.1.64/27?
+   .70 > .64 and .70 &lt; .95 (broadcast) → YES ✓
+
+2. /28: block=16, subnets: .0, .16, .32, .48, .64...
+   Each has 14 usable hosts.
+
+3. Quick trick: if IP is 172.20.15.200/20, which subnet?
+   /20 in 3rd octet: mask=240, block=16. 15/16=0.9...→ base=0
+   Network: 172.20.0.0/20, Broadcast: 172.20.15.255</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ef4444">VLSM — Variable Length Subnet Masking</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">VLSM allows subnets of different sizes within the same address space — maximizing efficiency. Allocate largest subnets first, then carve smaller ones from the remaining space. A /30 wastes no addresses on a 2-router link; a /25 serves a 100-person office.</div>
+            <div class="formula-box"><div class="flabel">VLSM ALLOCATION STRATEGY</div><pre>1. Sort requirements largest to smallest
+2. Round each up to nearest power of 2 (+ 2 for net/bcast)
+3. Allocate from start of address space, no overlap
+
+Example: 10.0.0.0/24
+  Dept A: 60 hosts → needs /26 (62 hosts) → 10.0.0.0/26
+  Dept B: 28 hosts → needs /27 (30 hosts) → 10.0.0.64/27
+  Dept C: 12 hosts → needs /28 (14 hosts) → 10.0.0.96/28
+  Link 1:  2 hosts → needs /30 (2 hosts)  → 10.0.0.112/30
+  Link 2:  2 hosts → needs /30 (2 hosts)  → 10.0.0.116/30
+  Remaining: 10.0.0.120 – 10.0.0.255 unused</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Without VLSM, all subnets same size → huge waste.
+   With VLSM: save 100+ addresses in above example.
+
+2. Enterprise WAN links all use /30 — exactly 2 hosts needed.
+   Using /24 for each would waste 252 addresses per link!
+
+3. Used by OSPF, EIGRP, BGP — not supported by RIPv1 (which
+   assumes classful masks). RIPv2/OSPF/EIGRP support VLSM.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-subnetting" onclick="toggleFlash('subnetting')" style="border-color:#ef4444;color:#ef4444">📚 Flashcards</button>
+      </div>
+      <div id="flash-subnetting" style="display:none"><div class="flash-wrapper" id="flashwrap-subnetting"></div></div>
+
+      <div class="calc-wrapper">
+        <div class="calc-header"><h3>⚙ Interactive Subnet Calculator</h3></div>
+        <div class="calc-body">
+          <div class="calc-inputs">
+            <div class="calc-field" style="flex:2">
+              <label>IP Address</label>
+              <input type="text" id="calc-ip" value="192.168.1.0" placeholder="e.g. 192.168.1.0">
+            </div>
+            <div class="calc-field">
+              <label>Prefix Length</label>
+              <div class="prefix-wrap"><span>/</span><input type="number" id="calc-prefix" min="0" max="32" value="24"></div>
+            </div>
+            <div class="calc-field" style="display:flex;align-items:flex-end">
+              <button class="calc-btn" onclick="calculateSubnet()">Calculate →</button>
+            </div>
+          </div>
+          <div id="calc-results" style="display:none">
+            <div class="calc-results" id="calc-cards"></div>
+            <button class="tool-btn" id="binary-toggle-btn" onclick="toggleBinary()" style="margin-bottom:.75rem;font-size:12px">▶ Show Binary Breakdown</button>
+            <div id="binary-display" style="display:none">
+              <div class="binary-breakdown">
+                <div class="blabel">BINARY ANALYSIS</div>
+                <div id="binary-content"></div>
+                <div class="binary-legend">
+                  <span><span class="l-dot" style="background:#10b981"></span> Network bits</span>
+                  <span><span class="l-dot" style="background:#ef4444"></span> Host bits</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="calc-error" style="display:none;color:var(--red);font-size:13px;padding:8px 0"></div>
+        </div>
+      </div>
+
+      <div class="quiz-section" id="quiz-subnetting"></div>
+    </div>
+
+    <!-- SUPERNETTING PAGE -->
+    <div class="page" id="page-supernetting">
+      <div class="page-header">
+        <span class="topic-icon">⊕</span>
+        <h2 style="color:#ec4899">Supernetting</h2>
+        <div class="analogy-box" style="background:rgba(236,72,153,.07);border:1px solid rgba(236,72,153,.25)">
+          <div class="alabel" style="color:#ec4899">💡 ANALOGY</div>
+          <div class="atext">Supernetting is like combining multiple small ZIP codes under a single regional postal code for efficient mail sorting — fewer lookup entries for the sorting machine.</div>
+        </div>
+      </div>
+      <p class="intro-text">Supernetting (route aggregation) combines multiple contiguous networks into a single larger routing entry. This reduces routing table size and is fundamental to how the internet scales. The combined networks must be contiguous, the same size, and the first network's address must be properly aligned.</p>
+
+      <div id="sections-supernetting">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ec4899">Requirements &amp; Rules</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Supernetting cannot be done arbitrarily. The networks must meet strict criteria: they must be contiguous (no gaps), all the same size (/n), and the starting address must be aligned to the aggregate block boundary. If any condition fails, aggregation is not possible without creating inaccurate routes.</div>
+            <div class="formula-box"><div class="flabel">SUPERNETTING REQUIREMENTS</div><pre>1. All networks same prefix length (/n)
+2. Networks are contiguous (no gaps between them)
+3. First network address divisible by (count × block_size)
+4. New prefix = n − log₂(count)
+
+Check: Can we aggregate 200.1.0.0/24 and 200.1.1.0/24?
+  Same size: ✓ (both /24)
+  Contiguous: ✓ (.0 and .1 are adjacent)
+  Aligned: 200.1.0.0 divisible by 2×256=512? 
+    200.1.0.0 in decimal 3rd octet=0 → 0 mod 2 = 0 ✓
+  Result: 200.1.0.0/23 ✓</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Can aggregate: 192.168.0.0/24 + 192.168.1.0/24 = /23 ✓
+2. Cannot aggregate: 192.168.1.0/24 + 192.168.2.0/24
+   (not aligned — 192.168.1.0 not on /23 boundary!)
+3. Can aggregate 4: 10.0.0.0/24 through 10.0.3.0/24 = /22 ✓
+   (10.0.0.0 divisible by 4×256=1024 in 3rd octet: 0 mod 4=0)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ec4899">Aggregation Algorithm</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">To find the aggregate prefix: write the first network address in binary, zero out the last log₂(count) bits of the network portion, and reduce the prefix by log₂(count). This gives the new summarized network. The aggregate covers exactly those networks and no others (if properly aligned).</div>
+            <div class="formula-box"><div class="flabel">STEP-BY-STEP ALGORITHM</div><pre>Aggregate 4 × /24: 10.0.0.0, 10.0.1.0, 10.0.2.0, 10.0.3.0
+
+Step 1: First network in binary
+  10.0.0.0 = 00001010.00000000.00000000.00000000
+
+Step 2: Current prefix = 24, count = 4, log₂4 = 2
+  New prefix = 24 − 2 = 22
+
+Step 3: Zero last 2 network bits (bits 23-24)
+  First 22 bits = 00001010.00000000.000000xx → 00001010.00000000.00000000
+  → 10.0.0.0/22 ✓
+
+Step 4: Verify coverage:
+  10.0.0.0/22 covers 10.0.0.0 – 10.0.3.255 ✓</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. 8 × /24: 172.16.0.0–172.16.7.0 → 172.16.0.0/21
+   (24 − log₂8 = 24 − 3 = 21)
+
+2. 2 × /16: 10.0.0.0/16 + 10.1.0.0/16 → 10.0.0.0/15
+
+3. ISP with 256 customer /24 blocks (200.1.0.0–200.1.255.0)
+   → Advertises 200.1.0.0/16 to internet (saves 255 routes!)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#ec4899">Benefits, Drawbacks &amp; BGP</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Supernetting is the backbone of internet scalability. The global BGP routing table would have millions of entries without aggregation; with it, it's ~1 million. However, aggregation hides individual network states — if one subnet fails, the aggregate may still look reachable, potentially causing a "black hole" (traffic dropped silently).</div>
+            <div class="formula-box"><div class="flabel">IMPACT METRICS</div><pre>Route table reduction = (n − 1) entries saved per aggregation
+Global BGP table: ~900K prefixes (without aggregation: millions)
+Memory saved: ~100 bytes × routes × routers
+
+Black-hole prevention:
+  → Use null0 route for aggregate on originating router
+  → aggregate-address (BGP) with summary-only keyword
+  → Only advertise aggregate if at least one component active</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. ISP aggregates 256 /24s to one /16 → every internet core
+   router needs 1 entry instead of 256. Scales globally!
+
+2. Black hole risk: 192.168.0.0/22 aggregated, but
+   192.168.2.0/24 goes down. Aggregate still advertised →
+   traffic to .2.x routed to aggregate owner → dropped!
+
+3. Solution: Cisco BGP config:
+   aggregate-address 192.168.0.0 255.255.252.0 summary-only</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-supernetting" onclick="toggleFlash('supernetting')" style="border-color:#ec4899;color:#ec4899">📚 Flashcards</button>
+      </div>
+      <div id="flash-supernetting" style="display:none"><div class="flash-wrapper" id="flashwrap-supernetting"></div></div>
+      <div class="quiz-section" id="quiz-supernetting"></div>
+    </div>
+
+    <!-- NAT PAGE -->
+    <div class="page" id="page-nat">
+      <div class="page-header">
+        <span class="topic-icon">↔</span>
+        <h2 style="color:#06b6d4">Network Address Translation (NAT)</h2>
+        <div class="analogy-box" style="background:rgba(6,182,212,.07);border:1px solid rgba(6,182,212,.25)">
+          <div class="alabel" style="color:#06b6d4">💡 ANALOGY</div>
+          <div class="atext">NAT is like a company receptionist — all calls from employees go out through one company number. The receptionist remembers who made each call and correctly routes back incoming replies.</div>
+        </div>
+      </div>
+      <p class="intro-text">NAT allows multiple devices on a private network to share a single public IP address. The NAT device (typically a router) maintains a translation table mapping private IP:port pairs to public IP:port pairs, enabling outbound connectivity for all private hosts through a single public address.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">NAT translation overview</div>
+        <div style="margin-bottom:12px">
+          <div class="nat-section">Private Network</div>
+          <div class="nat-row">
+            <div class="nat-device" style="border-color:#06b6d4;color:#06b6d4">PC: 192.168.1.10:5000</div>
+            <span style="color:var(--text3);font-size:18px">→</span>
+            <div class="nat-device" style="border-color:#f59e0b;color:#f59e0b">NAT Router<br><small style="color:var(--text3)">Translation Table</small></div>
+            <span style="color:var(--text3);font-size:18px">→</span>
+            <div class="nat-device" style="border-color:#10b981;color:#10b981">Internet<br>203.0.113.1:10001</div>
+          </div>
+          <div class="nat-row" style="margin-top:6px">
+            <div class="nat-device" style="border-color:#06b6d4;color:#06b6d4">TV: 192.168.1.20:7000</div>
+            <span style="color:var(--text3);font-size:18px">→</span>
+            <div style="font-size:11px;color:var(--text3)">same public IP,<br>different port</div>
+            <span style="color:var(--text3);font-size:18px">→</span>
+            <div class="nat-device" style="border-color:#10b981;color:#10b981">Internet<br>203.0.113.1:10002</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sections-nat">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#06b6d4">How NAT Works (Static, Dynamic, PAT)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">When a private host sends a packet, the NAT router replaces the source private IP with its public IP and records the mapping. Incoming replies are matched against the table and forwarded. Static NAT = fixed 1:1 mapping. Dynamic NAT = pool of public IPs. PAT (Port Address Translation) = many-to-one using port numbers.</div>
+            <div class="formula-box"><div class="flabel">NAT TYPES</div><pre>Static NAT:  Private IP ↔ Public IP (1-to-1, permanent)
+             Used for: internal servers, permanent access
+Dynamic NAT: Private IP ↔ Pool of public IPs (temporary)
+             Connection-based, pool must have enough IPs
+PAT / NAPT:  Many private IPs → One public IP (port-based)
+             Table: (Private IP, PvtPort) ↔ (Public IP, PubPort)
+             Supports 65,535 simultaneous connections per IP!</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Home router (PAT): phone(.10:5000), laptop(.11:6000),
+   TV(.12:7000) all share 1 public IP via different ports.
+
+2. Static NAT: company web server 192.168.1.100 always maps
+   to 203.0.113.50 → internet users reach it at .50.
+
+3. NAT table entry: 
+   192.168.1.10:1024 ↔ 203.0.113.1:10500 (TCP, state:ESTAB)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#06b6d4">PAT Deep Dive</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">PAT (also called IP Masquerade on Linux, or NAPT) uses port number remapping to distinguish multiple connections sharing one public IP. The router allocates a unique source port for each outbound connection. On reply, the port number in the translation table identifies which private host to forward to.</div>
+            <div class="formula-box"><div class="flabel">PAT PORT REMAPPING</div><pre>Multiple hosts, same dest port → unique public ports:
+  10.0.0.1:4500 → 203.0.113.1:10001  (to Netflix :443)
+  10.0.0.2:4500 → 203.0.113.1:10002  (to Netflix :443)
+  10.0.0.3:4500 → 203.0.113.1:10003  (to Netflix :443)
+
+Reply to :10002 → router knows → forward to 10.0.0.2:4500
+Reply to :10001 → router knows → forward to 10.0.0.1:4500</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+   (Linux PAT — masquerade all outbound traffic)
+
+2. Cisco IOS:
+   ip nat inside source list 1 interface Fa0/0 overload
+   (overload keyword = PAT)
+
+3. Theoretical max: 65,535 ports per protocol per public IP
+   (~65K TCP + 65K UDP simultaneous sessions)</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#06b6d4">NAT Problems &amp; Traversal</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">NAT breaks the internet's end-to-end principle. Protocols embedding IPs in their payload (FTP active mode, SIP/VoIP) break through NAT. Peer-to-peer (BitTorrent, WebRTC) struggles since NAT'd peers can't accept inbound connections. Solutions: STUN, TURN, ICE, UPnP.</div>
+            <div class="formula-box"><div class="flabel">NAT TRAVERSAL TECHNIQUES</div><pre>STUN  (Session Traversal Utilities for NAT):
+  → Client asks STUN server for its public IP:port
+  → Used by WebRTC, VoIP to discover external address
+  
+TURN  (Traversal Using Relays around NAT):
+  → Relay server forwards traffic when direct fails
+  → Higher latency, always works
+  
+ICE   (Interactive Connectivity Establishment):
+  → Tries: direct → STUN → TURN (in order of preference)
+  → Used by WebRTC (Google Meet, Discord, Zoom)
+  
+ALG   (Application Layer Gateway):
+  → Router inspects FTP/SIP payload, rewrites IPs
+  → Enables FTP active mode, SIP through NAT</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. WhatsApp call (VoIP): uses STUN to discover public IP,
+   then ICE to negotiate best path through NAT.
+
+2. FTP through NAT: ALG rewrites PORT command payload
+   from private IP to public IP automatically.
+
+3. PS4/Xbox gaming: UPnP auto-creates NAT port forwarding
+   entries. "Open NAT" = UPnP working. "Strict NAT" = blocked.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-nat" onclick="toggleFlash('nat')" style="border-color:#06b6d4;color:#06b6d4">📚 Flashcards</button>
+      </div>
+      <div id="flash-nat" style="display:none"><div class="flash-wrapper" id="flashwrap-nat"></div></div>
+      <div class="quiz-section" id="quiz-nat"></div>
+    </div>
+
+    <!-- ARP PAGE -->
+    <div class="page" id="page-arp">
+      <div class="page-header">
+        <span class="topic-icon">⇌</span>
+        <h2 style="color:#84cc16">ARP — Address Resolution Protocol</h2>
+        <div class="analogy-box" style="background:rgba(132,204,22,.07);border:1px solid rgba(132,204,22,.25)">
+          <div class="alabel" style="color:#84cc16">💡 ANALOGY</div>
+          <div class="atext">ARP is like shouting in a room: "Hey, who is John Smith? Please come talk to me!" Everyone hears the question, but only John responds — and then you remember his location.</div>
+        </div>
+      </div>
+      <p class="intro-text">ARP resolves IP addresses (Layer 3) to MAC addresses (Layer 2) within a local network. Before a device can send a frame, it must know the destination's MAC. ARP broadcasts a request; only the target replies. Results are cached to avoid repeated broadcasts.</p>
+
+      <div class="diagram">
+        <div class="diagram-title">ARP request/reply flow</div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(132,204,22,.15);color:#84cc16">1</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#84cc16">ARP Request (Broadcast)</div>
+            <div class="ddesc">PC1 → FF:FF:FF:FF:FF:FF — "Who has 192.168.1.2? Tell 192.168.1.1"<br>All devices on segment receive this frame</div>
+          </div>
+        </div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(132,204,22,.15);color:#84cc16">2</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#84cc16">ARP Reply (Unicast)</div>
+            <div class="ddesc">PC2 → PC1 (unicast) — "192.168.1.2 is at AA:BB:CC:DD:EE:FF"<br>Only the target with 192.168.1.2 responds</div>
+          </div>
+        </div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(132,204,22,.15);color:#84cc16">3</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#84cc16">Cache Update</div>
+            <div class="ddesc">PC1 stores: 192.168.1.2 → AA:BB:CC:DD:EE:FF [expires ~20min]<br>No more broadcasts needed until cache expires</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sections-arp">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#84cc16">ARP Operation &amp; Cache</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">ARP operates at the boundary of Layer 2 and Layer 3. Every time a device wants to send data to an IP address on the same subnet, it first checks its ARP cache. If the MAC isn't cached, it broadcasts an ARP Request. The target replies with its MAC address, which gets cached. Gratuitous ARP: a device announces its own IP:MAC mapping (used on startup, IP change, or failover).</div>
+            <div class="formula-box"><div class="flabel">ARP PACKET FORMAT</div><pre>ARP Request:
+  Sender MAC: 00:1A:2B:3C:4D:5E  (known)
+  Sender IP:  192.168.1.1         (known)
+  Target MAC: 00:00:00:00:00:00   (unknown — what we want!)
+  Target IP:  192.168.1.2         (known)
+
+ARP Reply:
+  Sender MAC: AA:BB:CC:DD:EE:FF  (target fills this in)
+  Sender IP:  192.168.1.2
+  Target MAC: 00:1A:2B:3C:4D:5E
+  Target IP:  192.168.1.1
+
+Cache TTL: ~20 min (Linux: 30s default, Windows: 2 min)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. arp -a (Windows/Linux): show ARP cache table
+   192.168.1.1 at 00:50:56:ab:cd:ef [ether] on eth0
+
+2. Gratuitous ARP: HSRP/VRRP sends when virtual IP
+   moves to standby router → all hosts update their cache.
+
+3. ARP for gateway: PC always ARPs for default gateway MAC
+   first, then forwards all non-local traffic to that MAC.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#84cc16">Proxy ARP</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Proxy ARP allows a router to answer ARP requests on behalf of hosts on different networks. If Host A (10.0.0.1/8) sends ARP for 10.1.0.1, its router intercepts and replies with its own MAC. Host A sends packets to router thinking it's sending directly — the router then forwards appropriately. Enabled by default on some Cisco platforms; generally considered a legacy feature.</div>
+            <div class="formula-box"><div class="flabel">PROXY ARP LOGIC</div><pre>If router receives ARP Request AND:
+  → Target IP is reachable via another interface
+  → Router has route to target IP
+Then:
+  → Router replies with its own MAC address
+  → Sender sends frames to router's MAC
+  → Router forwards to actual destination
+
+Cisco: ip proxy-arp (interface command, on by default)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Used when hosts are configured without a default gateway —
+   router transparently proxies all off-subnet ARPs.
+
+2. Can mask misconfigurations (hosts not knowing their subnet)
+   — generally better to configure proper default gateway.
+
+3. Disable: no ip proxy-arp on router interface for security.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#84cc16">ARP Poisoning / Spoofing Attack</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">ARP has no authentication. Any device can send a gratuitous ARP with false information, redirecting traffic. An attacker sends fake ARP replies claiming the router's IP maps to the attacker's MAC. All traffic meant for the router flows through the attacker — a Man-in-the-Middle (MITM) attack. Mitigated by Dynamic ARP Inspection (DAI) on managed switches.</div>
+            <div class="formula-box"><div class="flabel">ATTACK &amp; DEFENSE</div><pre>Attack:
+  1. Attacker sends: "192.168.1.1 (router) is at ATTACKER_MAC"
+  2. All hosts update ARP cache with wrong MAC
+  3. Traffic → attacker (who may forward to real router)
+  4. Attacker sees all plaintext data (MITM!)
+
+Defense:
+  DAI (Dynamic ARP Inspection): validates ARP against
+  DHCP snooping table. Invalid ARP packets dropped.
+  
+  DHCP Snooping: trusted vs untrusted ports; maintains
+  IP-MAC-Port binding database for DAI to reference.</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Tools: arpspoof (dsniff), ettercap, Scapy — all exploit
+   ARP's lack of authentication to perform MITM.
+
+2. Cisco DAI config:
+   ip arp inspection vlan 10
+   interface Fa0/0 → ip arp inspection trust (uplink only)
+
+3. HTTPS/TLS protects against MITM even if ARP poisoned —
+   certificate mismatch alerts user to tampering.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-arp" onclick="toggleFlash('arp')" style="border-color:#84cc16;color:#84cc16">📚 Flashcards</button>
+      </div>
+      <div id="flash-arp" style="display:none"><div class="flash-wrapper" id="flashwrap-arp"></div></div>
+      <div class="quiz-section" id="quiz-arp"></div>
+    </div>
+
+    <!-- DHCP PAGE -->
+    <div class="page" id="page-dhcp">
+      <div class="page-header">
+        <span class="topic-icon">⊛</span>
+        <h2 style="color:#f97316">DHCP — Dynamic Host Configuration Protocol</h2>
+        <div class="analogy-box" style="background:rgba(249,115,22,.07);border:1px solid rgba(249,115,22,.25)">
+          <div class="alabel" style="color:#f97316">💡 ANALOGY</div>
+          <div class="atext">DHCP is like a hotel front desk — when you check in (connect to network), they give you a room number (IP address) for your stay (lease time). When you check out, the room becomes available for the next guest.</div>
+        </div>
+      </div>
+      <p class="intro-text">DHCP automatically assigns IP addresses, subnet masks, default gateways, DNS servers, and other parameters to hosts. Without DHCP, every device requires manual IP configuration — impractical for large networks. DHCP uses UDP port 67 (server) and 68 (client).</p>
+
+      <div class="diagram">
+        <div class="diagram-title">DORA — the DHCP handshake</div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(249,115,22,.15);color:#f97316">D</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#f97316">DISCOVER (broadcast)</div>
+            <div class="ddesc">Client → 255.255.255.255 — "I need an IP address! Is anyone a DHCP server?"<br>Src IP: 0.0.0.0 | Dst IP: 255.255.255.255 | UDP 68→67</div>
+          </div>
+        </div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(249,115,22,.15);color:#f97316">O</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#f97316">OFFER (broadcast)</div>
+            <div class="ddesc">Server → 255.255.255.255 — "I offer you 192.168.1.105/24, gateway .1, DNS 8.8.8.8, lease 24h"<br>Server temporarily reserves the offered IP</div>
+          </div>
+        </div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(249,115,22,.15);color:#f97316">R</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#f97316">REQUEST (broadcast)</div>
+            <div class="ddesc">Client → 255.255.255.255 — "I accept the offer from server 192.168.1.1 for 192.168.1.105"<br>Broadcast so other DHCP servers know this offer was accepted</div>
+          </div>
+        </div>
+        <div class="dora-step">
+          <div class="dora-num" style="background:rgba(249,115,22,.15);color:#f97316">A</div>
+          <div class="dora-info">
+            <div class="dname" style="color:#f97316">ACKNOWLEDGE (broadcast/unicast)</div>
+            <div class="ddesc">Server → Client — "Confirmed! Here's your full config. Lease expires in 24 hours."<br>Client can now use the assigned IP address</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="sections-dhcp">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f97316">Lease Timers: T1, T2, Expiry</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">DHCP leases aren't permanent. T1 (50% of lease time) is when the client sends a unicast DHCPREQUEST to renew with its original server. T2 (87.5%) is when it broadcasts to any available server. If the lease expires with no renewal, the client must release the IP and restart DORA. This ensures IP addresses return to the pool when devices leave.</div>
+            <div class="formula-box"><div class="flabel">LEASE TIMER FORMULAS</div><pre>T1 (renewal timer)  = 0.5   × lease_time  → unicast to server
+T2 (rebinding timer) = 0.875 × lease_time  → broadcast
+
+Example: lease = 24 hours (86,400 seconds)
+  T1 = 12h  → "Server, may I keep 192.168.1.105?"
+  T2 = 21h  → "Any server, may I keep 192.168.1.105?"
+  T3 = 24h  → Lease expired → start DORA again
+
+DHCPRELEASE: client explicitly returns IP before expiry
+DHCPDECLINE:  client rejects offered IP (e.g., ARP probe 
+              detects IP already in use on network)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Laptop closes lid at T1: can still renew on reconnect
+   as long as lease hasn't expired.
+
+2. Server-side show: DHCP pool, leased addresses, expiry times.
+   Prevents IP conflicts by tracking all active leases.
+
+3. Short lease (1h) vs long lease (8d): short = reclaims IPs
+   faster (good for coffee shops). Long = less broadcast traffic
+   (good for stable enterprise desktops).</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f97316">DHCP Relay Agent &amp; Options</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">DHCP uses broadcasts which don't cross routers. DHCP Relay Agents (ip helper-address in Cisco) intercept DHCP broadcasts and forward them as unicast to a central DHCP server. The server uses the relay's IP (giaddr field) to determine which IP pool to assign from. DHCP Options provide additional configuration parameters.</div>
+            <div class="formula-box"><div class="flabel">DHCP RELAY &amp; KEY OPTIONS</div><pre>Cisco relay config:
+  interface Vlan10
+    ip helper-address 10.0.0.5  ← DHCP server IP
+
+Key DHCP Options (RFC 2132):
+  Option 1:  Subnet mask
+  Option 3:  Default router/gateway
+  Option 6:  DNS server(s)
+  Option 15: Domain name
+  Option 43: Vendor-specific info
+  Option 51: IP address lease time
+  Option 53: DHCP message type (Discover/Offer/Request/ACK)
+  Option 82: Relay agent information (circuit ID, remote ID)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. Enterprise with 50 VLANs: one Windows DHCP server.
+   Each VLAN SVI has ip helper-address → all VLANs served.
+
+2. Option 82 lets server know which switch port/VLAN the
+   client is on → assign from correct scope/pool.
+
+3. DHCP starvation attack: attacker sends thousands of
+   DISCOVER messages, exhausting IP pool. Defense: DHCP
+   snooping with rate-limiting on untrusted ports.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#f97316">DHCPv6 &amp; SLAAC (IPv6)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">IPv6 has two auto-configuration methods: SLAAC (Stateless Address Autoconfiguration) and DHCPv6. SLAAC uses Router Advertisements (ICMPv6) — hosts generate their own address from the /64 prefix. DHCPv6 provides more control (DNS, domain, specific addresses). Stateless DHCPv6 provides config but not addresses; Stateful DHCPv6 provides both.</div>
+            <div class="formula-box"><div class="flabel">SLAAC ADDRESS GENERATION</div><pre>Prefix from Router Advertisement: 2001:db8::/64
+Interface ID from EUI-64:
+  MAC: 00:1A:2B:3C:4D:5E
+  EUI-64: 021A:2BFF:FE3C:4D5E (insert FFFE, flip U/L bit)
+Full address: 2001:db8::021a:2bff:fe3c:4d5e/64
+
+Privacy Extensions (RFC 4941): random interface ID
+  → Prevents tracking via stable MAC-derived address</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. SLAAC: device auto-configures global address from RA prefix
+   + generates link-local fe80::... automatically.
+
+2. Stateless DHCPv6 (M=0,O=1 in RA): SLAAC for address,
+   DHCPv6 just for DNS/domain name configuration.
+
+3. Stateful DHCPv6 (M=1 in RA): full DHCPv6 like DHCPv4
+   — assigns specific IPv6 addresses from server pool.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-dhcp" onclick="toggleFlash('dhcp')" style="border-color:#f97316;color:#f97316">📚 Flashcards</button>
+      </div>
+      <div id="flash-dhcp" style="display:none"><div class="flash-wrapper" id="flashwrap-dhcp"></div></div>
+      <div class="quiz-section" id="quiz-dhcp"></div>
+    </div>
+
+    <!-- ICMP PAGE -->
+    <div class="page" id="page-icmp">
+      <div class="page-header">
+        <span class="topic-icon">⚡</span>
+        <h2 style="color:#a855f7">ICMP — Internet Control Message Protocol</h2>
+        <div class="analogy-box" style="background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.25)">
+          <div class="alabel" style="color:#a855f7">💡 ANALOGY</div>
+          <div class="atext">ICMP is the postal system's notification service — it sends "return to sender, address unknown" when your letter can't be delivered, or "road closed ahead" when a path is unavailable.</div>
+        </div>
+      </div>
+      <p class="intro-text">ICMP is a support protocol used for sending error messages and operational queries. It's encapsulated in IP packets but is not used for end-user data transfer. ICMP enables essential diagnostic tools: ping (connectivity test) and traceroute (path discovery).</p>
+
+      <div id="sections-icmp">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#a855f7">ICMP Message Types &amp; Codes</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Each ICMP message has a Type (1 byte) and Code (1 byte) field. Type identifies the category; Code provides detail within that type. The most common types are Echo Request/Reply (ping), Destination Unreachable (various codes for different failure reasons), Time Exceeded (traceroute), and Redirect (inform sender of better route).</div>
+            <div class="formula-box"><div class="flabel">COMMON ICMP TYPES &amp; CODES</div><pre>Type 0:  Echo Reply       (ping response)
+Type 3:  Destination Unreachable
+  Code 0: Net unreachable    Code 1: Host unreachable
+  Code 2: Protocol unreachable Code 3: Port unreachable ← UDP!
+  Code 4: Fragmentation needed (DF set, MTU too small)
+Type 5:  Redirect (code 0-3: net/host/TOS redirect)
+Type 8:  Echo Request      (ping command sends this)
+Type 11: Time Exceeded
+  Code 0: TTL exceeded in transit    ← traceroute!
+  Code 1: Fragment reassembly timeout
+Type 12: Parameter Problem (bad IP header)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. "Connection refused" (TCP) vs ICMP Type 3 Code 3:
+   UDP to closed port → host sends ICMP Port Unreachable.
+   TCP to closed port → TCP RST (no ICMP).
+
+2. Type 3, Code 4 (Frag Needed): enables Path MTU Discovery.
+   Router can't forward oversized DF=1 packet → sends this.
+
+3. Type 5 Redirect: router tells PC "use 192.168.1.2 as
+   gateway for 10.0.0.0/8, it's more optimal" → PC updates
+   its local routing table temporarily.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#a855f7">Ping — Echo Request/Reply</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Ping sends ICMP Type 8 (Echo Request) packets and waits for Type 0 (Echo Reply). Each request has a sequence number and identifier. The RTT (round-trip time) measures network latency. Packet loss percentage indicates link quality. The TTL in the reply reveals approximate hop count.</div>
+            <div class="formula-box"><div class="flabel">PING METRICS</div><pre>RTT (Round Trip Time) = T_reply − T_request
+Packet Loss % = ((sent − received) / sent) × 100
+
+ICMP Echo payload includes:
+  Identifier (2B): identifies the ping session
+  Sequence (2B): increments per request
+  Timestamp (optional): for RTT calculation
+  Data: arbitrary padding (default 56 bytes = 64 byte ICMP)
+
+ping -c 4 -s 1400 -t 128 192.168.1.1
+  -c: count, -s: payload size, -t: TTL to use</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. ping 8.8.8.8:
+   64 bytes from 8.8.8.8: seq=1 ttl=118 time=13.8ms
+   Reply TTL=118 → started at 128 (Windows default)
+   → 128−118 = 10 hops away (approx)
+
+2. ping -f -l 1400 192.168.1.1 (Windows): DF=1, 1400 bytes
+   If "Packet needs to be fragmented" → MTU < 1420 on path.
+
+3. Ping flood (DoS): ping -f -s 65500 target → overwhelm
+   network. Modern routers rate-limit ICMP replies.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#a855f7">Traceroute — Path Discovery</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Traceroute exploits ICMP's Time Exceeded message. It sends packets with TTL starting at 1, increasing by 1 each round. Each router that decrements TTL to 0 returns an ICMP Time Exceeded, revealing its IP address. By collecting all these responses, traceroute maps the entire path to the destination.</div>
+            <div class="formula-box"><div class="flabel">TRACEROUTE ALGORITHM</div><pre>For TTL = 1, 2, 3, ..., max_hops:
+  Send 3 packets with current TTL to destination
+  
+  Router at hop N:
+    → Decrements TTL to 0
+    → Discards packet
+    → Sends ICMP Time Exceeded (Type 11, Code 0) to source
+    
+  Source receives ICMP from router_N_IP → that's hop N!
+  
+  When ICMP Echo Reply (Type 0) received:
+    → Destination reached, traceroute complete
+  
+  * = timeout (router doesn't reply, firewall blocks ICMP)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. traceroute google.com:
+   1  192.168.1.1 (home router)     1.3ms
+   2  10.20.30.1  (ISP gateway)     8.6ms
+   3  72.14.215.1 (Google network)  12.4ms
+   4  8.8.8.8     (destination)     13.1ms
+
+2. Windows uses ICMP Echo; Linux/Mac use UDP by default.
+   tracert (Windows) vs traceroute (Linux/Mac) vs mtr.
+
+3. * * * at a hop = router drops ICMP TTL exceeded (common
+   at ISP backbones for security). Doesn't mean path broken.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-icmp" onclick="toggleFlash('icmp')" style="border-color:#a855f7;color:#a855f7">📚 Flashcards</button>
+      </div>
+      <div id="flash-icmp" style="display:none"><div class="flash-wrapper" id="flashwrap-icmp"></div></div>
+      <div class="quiz-section" id="quiz-icmp"></div>
+    </div>
+
+    <!-- ROUTING PAGE -->
+    <div class="page" id="page-routing">
+      <div class="page-header">
+        <span class="topic-icon">⬡</span>
+        <h2 style="color:#14b8a6">Routing Algorithms</h2>
+        <div class="analogy-box" style="background:rgba(20,184,166,.07);border:1px solid rgba(20,184,166,.25)">
+          <div class="alabel" style="color:#14b8a6">💡 ANALOGY</div>
+          <div class="atext">Distance Vector = asking neighbors for directions (trusting them blindly). Link State = having a complete city map. Hierarchical = having detailed local maps with highway summaries for other cities.</div>
+        </div>
+      </div>
+      <p class="intro-text">Routing algorithms determine the best path for packets to travel from source to destination across an internetwork. They fall into three main categories: Distance Vector (simpler, slower convergence), Link State (faster convergence, more resource-intensive), and Hierarchical (scalable for large networks).</p>
+
+      <div id="sections-routing">
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#14b8a6">Distance Vector Routing (RIP)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Each router maintains a distance vector: a table of (destination, distance, next-hop). Routers periodically share their entire tables only with directly connected neighbors. Each router updates using the Bellman-Ford equation. Simple to implement but slow to converge and vulnerable to routing loops. RIP uses hop count (max 15; 16 = infinity/unreachable).</div>
+            <div class="formula-box"><div class="flabel">BELLMAN-FORD EQUATION</div><pre>D(x, y) = min over all neighbors v of { cost(x,v) + D(v,y) }
+
+Where:
+  D(x,y)   = best known distance from x to y
+  cost(x,v) = link cost from x to neighbor v
+  D(v,y)   = neighbor v's advertised distance to y
+
+RIP Timers:
+  Update:  30s  (send full routing table to neighbors)
+  Invalid: 180s (route marked invalid if no update)
+  Flush:   240s (route removed from table)
+  Holddown: prevents accepting new info for failed route</pre></div>
+            <div class="diagram">
+              <div class="diagram-title">Distance vector example — router A learning about D</div>
+              <div class="flow-row">
+                <div class="flow-node" style="border-color:#14b8a6;color:#14b8a6">A</div>
+                <div style="text-align:center">
+                  <div class="flow-arrow">──1──</div>
+                </div>
+                <div class="flow-node" style="border-color:#f59e0b;color:#f59e0b">B<br><small style="color:var(--text3)">"D=2"</small></div>
+                <div class="flow-arrow">──2──</div>
+                <div class="flow-node" style="border-color:#7c3aed;color:#7c3aed">C<br><small style="color:var(--text3)">"D=4"</small></div>
+                <div class="flow-arrow">──3──</div>
+                <div class="flow-node" style="border-color:#ef4444;color:#ef4444">D</div>
+              </div>
+              <div style="margin-top:10px;font-size:12px;color:var(--text2)">A hears from B: D is 2 hops away via B (cost 1+2=3). A hears from C: D is 4 hops via C (cost 1+4+... wait, no direct A-C). Best: via B, total cost 3.</div>
+            </div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. RIPv1: classful, no subnet mask in updates, broadcast.
+   RIPv2: classless (CIDR/VLSM), multicast 224.0.0.9.
+   RIPng: RIP for IPv6, multicast FF02::9.
+
+2. show ip rip database (Cisco) — view RIP routing entries.
+   debug ip rip — see RIP updates being sent/received.
+
+3. Converge time = up to 3 update intervals (90s for RIP)
+   after a topology change. OSPF converges in seconds.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#14b8a6">Count-to-Infinity Problem &amp; Solutions</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">When a link fails in distance vector routing, routers may loop-advertise false paths with ever-increasing metrics until they hit infinity (16 in RIP). This count-to-infinity problem can take minutes to resolve. Solutions: split horizon, poison reverse, triggered updates, and hold-down timers.</div>
+            <div class="formula-box"><div class="flabel">SOLUTIONS TO COUNT-TO-INFINITY</div><pre>Split Horizon:
+  Never advertise a route back out the interface
+  you received it from. Prevents two-node loops.
+
+Poison Reverse (enhanced split horizon):
+  Advertise failed routes back with metric=infinity(16)
+  More aggressive, eliminates loops faster.
+
+Triggered Updates:
+  Send update IMMEDIATELY when route changes.
+  Don't wait for 30s periodic timer. Faster convergence.
+
+Hold-Down Timer:
+  After hearing a route is gone, ignore updates about
+  that route for hold-down period (prevents false info).
+  
+Route Poisoning:
+  Immediately set failed route to metric=16, advertise.</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. A-B-C topology. B-C link fails:
+   Without split horizon: A tells B "I can reach C via 2 hops"
+   → B thinks C reachable via A at cost 3 → A updates to 4...
+   → Count-to-infinity!  Resolved only after metric hits 16.
+
+2. With split horizon: B learned C from B-C link. A doesn't
+   re-advertise C back to B (learned from B). Loop prevented!
+
+3. Hold-down = 180s in RIP. After route down, ignore any
+   updates claiming that route is back for 180s.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#14b8a6">Link State Routing (OSPF)</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">Each router floods its Link State Advertisement (LSA) containing its directly connected neighbors and link costs to ALL routers in the area. Every router builds an identical Link State Database (LSDB — complete topology map) and independently runs Dijkstra's Shortest Path First algorithm to calculate optimal routes. Faster convergence, no count-to-infinity, but requires more memory and CPU.</div>
+            <div class="formula-box"><div class="flabel">DIJKSTRA'S ALGORITHM</div><pre>Initialize: dist[source]=0, dist[all others]=∞
+Unvisited = all nodes
+
+While unvisited not empty:
+  u = node with minimum dist[] in unvisited
+  Mark u as visited
+  For each neighbor v of u:
+    new_dist = dist[u] + cost(u, v)
+    If new_dist &lt; dist[v]:
+      dist[v] = new_dist
+      prev[v] = u  ← remember path
+
+OSPF cost = Reference bandwidth / Interface bandwidth
+  Default ref. BW = 100 Mbps
+  FastEthernet (100M) cost = 100/100 = 1
+  T1 (1.544M) cost = 100/1.544 ≈ 64</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. OSPF LSA types:
+   Type 1: Router LSA (neighbors + costs)
+   Type 2: Network LSA (multi-access segments)
+   Type 3: Summary LSA (inter-area, from ABR)
+   Type 5: External LSA (redistributed routes, from ASBR)
+
+2. OSPF hello packets: every 10s (default), Dead interval=40s.
+   Neighbors form adjacency → exchange LSDB → run Dijkstra.
+
+3. OSPF areas: all areas connect to Area 0 (backbone).
+   ABR (Area Border Router) summarizes inter-area routes.
+   Reduces LSDB size within each area.</pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <button class="section-toggle open" onclick="toggleSection(this)">
+            <span class="stitle" style="color:#14b8a6">Hierarchical Routing &amp; BGP</span><span class="sarrow">▶</span>
+          </button>
+          <div class="section-body">
+            <div class="section-content">For very large networks, flat routing is impractical — too many routers to track. Hierarchical routing divides the network into regions/areas. Routers know full topology within their region, only summarized information about other regions. OSPF implements this with areas. BGP (Border Gateway Protocol) implements hierarchical routing between Autonomous Systems (ASes) on the internet.</div>
+            <div class="formula-box"><div class="flabel">HIERARCHICAL ROUTING MATH</div><pre>Flat routing (N routers): routing table size = O(N)
+  Each router knows every other router's state
+  With N=50,000: impractical!
+
+Hierarchical (regions of k routers, N/k regions):
+  Intra-region entries = k
+  Inter-region entries = N/k
+  Total = k + N/k
+  Optimal k = √N  (minimizes total entries)
+  For N=10,000: optimal k = 100 regions of 100 routers each
+
+BGP (internet routing):
+  Path Vector protocol (extends distance vector)
+  Propagates entire AS path: prevents loops
+  Policy-based: not just shortest path (business decisions)</pre></div>
+            <div class="example-box" style="background:rgba(16,185,129,.07);border:1px solid rgba(16,185,129,.2)">
+              <div class="elabel" style="color:#10b981">EXAMPLES</div>
+              <pre style="color:var(--text)">1. OSPF hierarchy: Area 0 backbone ← Area 1,2,3 attached.
+   Routers in Area 1 only know Area 1 topology in detail.
+   Inter-area: ABR advertises summary LSA3 to other areas.
+
+2. BGP AS path: 192.0.2.0/24 reachable via path AS1, AS3, AS7
+   If AS1 sees its own ASN in path → loop detected → discard.
+
+3. Internet BGP: ~70,000 ASes, ~1 million prefixes.
+   ISPs filter: customer routes accepted, peer routes filtered
+   by prefix lists, AS path filters, and community strings.</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-row">
+        <button class="tool-btn" id="flash-btn-routing" onclick="toggleFlash('routing')" style="border-color:#14b8a6;color:#14b8a6">📚 Flashcards</button>
+      </div>
+      <div id="flash-routing" style="display:none"><div class="flash-wrapper" id="flashwrap-routing"></div></div>
+      <div class="quiz-section" id="quiz-routing"></div>
+    </div>
+
+    <!-- TOOLS PAGE -->
+    <div class="page" id="page-tools">
+      <div style="padding:1.5rem 1.25rem 1rem">
+        <h2 style="font-family:var(--sans);color:var(--amber);margin-bottom:.5rem">⚙ Networking Tools</h2>
+        <p style="color:var(--text2);font-size:14px;margin-bottom:2rem">Interactive tools for subnetting, CIDR analysis, and quick reference.</p>
+
+        <div class="calc-wrapper">
+          <div class="calc-header"><h3>⚙ Interactive Subnet Calculator</h3></div>
+          <div class="calc-body">
+            <div class="calc-inputs">
+              <div class="calc-field" style="flex:2">
+                <label>IP Address</label>
+                <input type="text" id="tool-calc-ip" value="10.0.0.0" placeholder="e.g. 192.168.1.0">
+              </div>
+              <div class="calc-field">
+                <label>Prefix Length</label>
+                <div class="prefix-wrap"><span>/</span><input type="number" id="tool-calc-prefix" min="0" max="32" value="16"></div>
+              </div>
+              <div class="calc-field" style="display:flex;align-items:flex-end">
+                <button class="calc-btn" onclick="calculateSubnetTool()">Calculate →</button>
+              </div>
+            </div>
+            <div id="tool-calc-results" style="display:none">
+              <div class="calc-results" id="tool-calc-cards"></div>
+              <button class="tool-btn" id="tool-binary-toggle-btn" onclick="toggleBinaryTool()" style="margin-bottom:.75rem;font-size:12px">▶ Show Binary Breakdown</button>
+              <div id="tool-binary-display" style="display:none">
+                <div class="binary-breakdown">
+                  <div class="blabel">BINARY ANALYSIS</div>
+                  <div id="tool-binary-content"></div>
+                  <div class="binary-legend">
+                    <span><span class="l-dot" style="background:#10b981"></span> Network bits</span>
+                    <span><span class="l-dot" style="background:#ef4444"></span> Host bits</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tool-calc-error" style="display:none;color:var(--red);font-size:13px;padding:8px 0"></div>
+          </div>
+        </div>
+
+        <div class="cidr-table-wrap">
+          <div class="cidr-table-header"><h3>CIDR Quick Reference Table</h3></div>
+          <div style="overflow-x:auto">
+            <table class="cidr-table" id="cidr-ref-table"></table>
+          </div>
+        </div>
+
+        <div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-top:1.5rem">
+          <h3 style="color:var(--violet);margin-bottom:1rem;font-size:14px">⚡ IP Class Identifier</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem">
+            <input type="text" id="class-ip" placeholder="Enter IP (e.g. 172.20.5.1)" style="flex:1;min-width:200px;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 13px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none">
+            <button onclick="identifyClass()" style="background:var(--violet);color:#fff;border:none;border-radius:7px;padding:9px 20px;font-family:var(--mono);font-size:13px;font-weight:700;cursor:pointer">Identify →</button>
+          </div>
+          <div id="class-result" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;font-size:13px"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const completed = new Set();
+let sidebarOpen = false;
+
+function toggleSidebar() {
+  sidebarOpen = !sidebarOpen;
+  document.getElementById('sidebar').classList.toggle('open', sidebarOpen);
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const sb = document.getElementById('sb-' + id);
+  if (sb) sb.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id !== 'home' && id !== 'tools') markDone(id);
+  if (id === 'tools') buildCidrTable();
+}
+
+function markDone(id) {
+  if (completed.has(id)) return;
+  completed.add(id);
+  const el = document.getElementById('hb-' + id);
+  if (el) el.style.display = 'block';
+  const ck = document.getElementById('ck-' + id);
+  if (ck) ck.textContent = '✓';
+  updateProgress();
+}
+
+function updateProgress() {
+  const n = completed.size, total = 11;
+  const pct = Math.round(n / total * 100);
+  document.getElementById('home-pbar').style.width = pct + '%';
+  document.getElementById('pct-label').textContent = pct + '%';
+  document.getElementById('home-sub').textContent = n + ' of ' + total + ' topics visited';
+  document.getElementById('nav-progress-fill').style.width = pct + '%';
+  document.getElementById('nav-progress-label').textContent = n + '/' + total + ' done';
+}
+
+function toggleSection(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  body.style.display = isOpen ? 'none' : 'block';
+}
+
+const flashData = {
+  switching: [
+    {f:'Circuit Switching', b:'Dedicated end-to-end path held for entire session. Used in PSTN. Resources reserved even when idle.'},
+    {f:'Packet Switching', b:'Data split into packets, each routed independently. Shared resources. Used in the Internet.'},
+    {f:'MAC Address Table', b:'Switch CAM table mapping MAC addresses to ports. Unknown destination = flood all ports.'},
+    {f:'Store-and-Forward', b:'Switch receives complete frame before forwarding. Checks for errors (CRC). Adds latency.'},
+  ],
+  ip: [
+    {f:'IPv4 Header Minimum', b:'20 bytes (IHL=5). Contains: version, TTL, protocol, source IP, destination IP, checksum.'},
+    {f:'TTL Field', b:'Time To Live — decremented at each router hop. When TTL=0, packet discarded and ICMP Type 11 sent.'},
+    {f:'IP Fragmentation', b:'Fragment offset = start_byte / 8. DF bit prevents fragmentation. MF bit set on all but last fragment.'},
+    {f:'IPv6 Address Size', b:'128 bits (vs IPv4 32 bits). 2¹²⁸ = 340 undecillion addresses. Written in hex groups.'},
+  ],
+  ipaddr: [
+    {f:'Class A Range', b:'1.0.0.0 – 126.255.255.255. Default /8 mask. 16,777,214 hosts per network.'},
+    {f:'Class C Range', b:'192.0.0.0 – 223.255.255.255. Default /24 mask. 254 usable hosts per network.'},
+    {f:'RFC 1918 Private', b:'10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16. Not routed on public internet. Used with NAT.'},
+    {f:'Network Address Calc', b:'IP AND Subnet Mask = Network Address. Broadcast = Network OR (NOT Mask).'},
+  ],
+  cidr: [
+    {f:'CIDR Block Size', b:'Block size = 2^(32−prefix). /24 = 256 addrs. /23 = 512. /22 = 1024.'},
+    {f:'Route Aggregation', b:'Combine n contiguous /k networks → new prefix = k − log₂n. Reduces routing table.'},
+    {f:'Longest Prefix Match', b:'Router selects most specific (longest prefix) route for a destination. /24 beats /22 beats /16.'},
+    {f:'CIDR Replaced', b:'Classful addressing in 1993. Enables flexible allocation and prevents address exhaustion.'},
+  ],
+  subnetting: [
+    {f:'Borrowing Bits', b:'Each borrowed bit doubles subnets, halves hosts. Borrow s bits: 2^s subnets, 2^(h−s)−2 hosts.'},
+    {f:'Block Size', b:'256 − (mask value in interesting octet). /27 → 256−224=32. /26 → 256−192=64.'},
+    {f:'VLSM', b:'Variable Length Subnet Masking: different subnet sizes within same network. Allocate largest first.'},
+    {f:'/30 Use Case', b:'4 addresses, 2 usable hosts. Perfect for point-to-point router links. Wastes no addresses.'},
+  ],
+  supernetting: [
+    {f:'Supernetting Requirements', b:'Networks must be: same size, contiguous, first address aligned to aggregate boundary.'},
+    {f:'New Prefix Calculation', b:'New prefix = old_prefix − log₂(count_of_networks). 4 × /24 → /22.'},
+    {f:'Alignment Rule', b:'First network address must be divisible by (count × block_size). 200.1.0.0/23 needs .0 divisible by 512.'},
+    {f:'Black Hole Risk', b:'Aggregate route remains advertised even if a component subnet goes down. Fix with null0 static route.'},
+  ],
+  nat: [
+    {f:'Static NAT', b:'Permanent 1-to-1 mapping: private IP ↔ public IP. Used for internal servers needing permanent public access.'},
+    {f:'PAT/NAPT', b:'Many private IPs share one public IP using port numbers. Supports ~65K sessions per public IP.'},
+    {f:'NAT Table Entry', b:'(Private IP, Pvt Port) ↔ (Public IP, Pub Port). Created on outbound connection, removed on timeout.'},
+    {f:'STUN', b:'Allows NAT\'d devices to discover their public IP:port. Used by WebRTC, VoIP for NAT traversal.'},
+  ],
+  arp: [
+    {f:'ARP Request', b:'Broadcast (FF:FF:FF:FF:FF:FF) asking "Who has IP X?" Entire local segment receives it.'},
+    {f:'ARP Reply', b:'Unicast response from target: "IP X is at MAC M". Sender caches this for ~20 minutes.'},
+    {f:'Gratuitous ARP', b:'Device announces its own IP:MAC. Used on startup, HSRP failover, or IP address changes.'},
+    {f:'ARP Poisoning', b:'Attacker sends fake ARP replies redirecting traffic to attacker\'s MAC. Enables MITM attacks.'},
+  ],
+  dhcp: [
+    {f:'DORA', b:'Discover → Offer → Request → Acknowledge. Four-step DHCP handshake. Uses broadcast (no IP yet).'},
+    {f:'T1 Timer', b:'50% of lease time. Client sends unicast DHCPREQUEST to original server to renew lease.'},
+    {f:'T2 Timer', b:'87.5% of lease time. Client broadcasts DHCPREQUEST to any available DHCP server.'},
+    {f:'DHCP Relay', b:'Forwards DHCP broadcasts across router boundaries (ip helper-address on Cisco). Enables central DHCP server.'},
+  ],
+  icmp: [
+    {f:'ICMP Type 8', b:'Echo Request (ping sends this). Contains sequence number and identifier for matching replies.'},
+    {f:'ICMP Type 0', b:'Echo Reply (ping response). RTT = time between sending Type 8 and receiving Type 0.'},
+    {f:'ICMP Type 11', b:'Time Exceeded. Code 0: TTL expired in transit → this is what enables traceroute!'},
+    {f:'ICMP Type 3', b:'Destination Unreachable. Code 3 = Port Unreachable (UDP closed port). Code 4 = Fragmentation Needed.'},
+  ],
+  routing: [
+    {f:'Bellman-Ford', b:'D(x,y) = min{cost(x,v) + D(v,y)} for all neighbors v. Used by distance vector protocols (RIP).'},
+    {f:'Dijkstra\'s Algorithm', b:'Builds shortest path tree from source. Used by link state protocols (OSPF). O(n²) or O((n+e)log n).'},
+    {f:'Split Horizon', b:'Don\'t advertise a route back out the interface you learned it from. Prevents two-node routing loops.'},
+    {f:'OSPF Cost', b:'Cost = Reference bandwidth / Interface bandwidth. Default ref BW = 100 Mbps. Lower cost = preferred.'},
+  ],
+};
+
+const quizData = {
+  switching: {color:'#00d4ff', qs:[
+    {q:'What does a switch use to make forwarding decisions?',opts:['IP addresses','MAC addresses','Port numbers','Hostnames'],ans:1},
+    {q:'In circuit switching, what happens to reserved resources during idle periods?',opts:['Released back to pool','Used by other connections','Wasted/held','Shared automatically'],ans:2},
+    {q:'What does a switch do when it doesn\'t know the destination MAC?',opts:['Drops the frame','Sends to router','Floods all ports','Requests ARP'],ans:2},
+  ]},
+  ip: {color:'#7c3aed', qs:[
+    {q:'What is the minimum size of an IPv4 header?',opts:['16 bytes','20 bytes','24 bytes','32 bytes'],ans:1},
+    {q:'What happens when TTL reaches 0?',opts:['Packet is delivered','Packet is retransmitted','Packet is discarded + ICMP sent','Packet is fragmented'],ans:2},
+    {q:'IPv6 addresses are how many bits?',opts:['32 bits','64 bits','96 bits','128 bits'],ans:3},
+  ]},
+  ipaddr: {color:'#10b981', qs:[
+    {q:'Which class has a default /24 subnet mask?',opts:['Class A','Class B','Class C','Class D'],ans:2},
+    {q:'What is the RFC 1918 private range for Class B-like space?',opts:['10.0.0.0/8','172.16.0.0/12','192.168.0.0/16','169.254.0.0/16'],ans:1},
+    {q:'How many usable hosts in a /24 network?',opts:['254','255','256','252'],ans:0},
+  ]},
+  cidr: {color:'#f59e0b', qs:[
+    {q:'How many usable host addresses does a /26 provide?',opts:['62','64','30','126'],ans:0},
+    {q:'What did CIDR replace?',opts:['VLSM','Classful addressing','NAT','DHCP'],ans:1},
+    {q:'Longest prefix match selects the route with:',opts:['Shortest mask','Longest (most specific) mask','Lowest metric','Highest TTL'],ans:1},
+  ]},
+  subnetting: {color:'#ef4444', qs:[
+    {q:'You borrow 4 bits from a /24 network. What is the new prefix?',opts:['/26','/27','/28','/30'],ans:2},
+    {q:'How many usable hosts does a /30 provide?',opts:['2','4','6','30'],ans:0},
+    {q:'What is the block size for a /27 subnet?',opts:['16','32','64','128'],ans:1},
+  ]},
+  supernetting: {color:'#ec4899', qs:[
+    {q:'What does supernetting primarily reduce?',opts:['IP address space','Routing table size','Bandwidth usage','Latency'],ans:1},
+    {q:'Aggregating 4 contiguous /24 networks gives what new prefix?',opts:['/21','/22','/23','/20'],ans:1},
+    {q:'Which is NOT a requirement for supernetting?',opts:['Same size networks','Contiguous blocks','Proper alignment','Different ASes'],ans:3},
+  ]},
+  nat: {color:'#06b6d4', qs:[
+    {q:'What does PAT (Port Address Translation) allow?',opts:['1-to-1 IP mapping','Many private hosts share one public IP','Dynamic routing updates','IP header compression'],ans:1},
+    {q:'Which protocol type breaks NAT by embedding IPs in payload?',opts:['TCP','FTP active mode / SIP','UDP','HTTPS'],ans:1},
+    {q:'What does the NAT translation table store?',opts:['MAC addresses','DNS records','Private/Public IP:Port mappings','Routing metrics'],ans:2},
+  ]},
+  arp: {color:'#84cc16', qs:[
+    {q:'ARP requests are sent to which destination MAC?',opts:['00:00:00:00:00:00','FF:FF:FF:FF:FF:FF','Router\'s MAC','Target\'s MAC'],ans:1},
+    {q:'What is a Gratuitous ARP?',opts:['ARP for default gateway','A device announcing its own IP:MAC mapping','ARP across subnets','Encrypted ARP reply'],ans:1},
+    {q:'ARP Poisoning enables which attack?',opts:['Denial of Service','Port scanning','Man-in-the-Middle','DNS hijacking'],ans:2},
+  ]},
+  dhcp: {color:'#f97316', qs:[
+    {q:'What does DORA stand for in DHCP?',opts:['Define, Offer, Route, Assign','Discover, Offer, Request, Acknowledge','Detect, Offer, Resolve, Authenticate','Discover, Open, Route, Acknowledge'],ans:1},
+    {q:'At what percentage of lease time does DHCP client first try to renew (T1)?',opts:['25%','50%','75%','87.5%'],ans:1},
+    {q:'What allows DHCP to work across multiple subnets/routers?',opts:['DHCP Proxy Server','DHCP Relay Agent (ip helper-address)','DHCP Multicast Group','DHCP Broadcast Bridge'],ans:1},
+  ]},
+  icmp: {color:'#a855f7', qs:[
+    {q:'What ICMP type number is an Echo Request (used by ping)?',opts:['Type 0','Type 3','Type 8','Type 11'],ans:2},
+    {q:'Traceroute works by exploiting which ICMP message type?',opts:['Echo Reply (Type 0)','Destination Unreachable (Type 3)','Redirect (Type 5)','Time Exceeded (Type 11)'],ans:3},
+    {q:'ICMP Type 3, Code 3 means what?',opts:['Network unreachable','Host unreachable','Port unreachable','Protocol unreachable'],ans:2},
+  ]},
+  routing: {color:'#14b8a6', qs:[
+    {q:'Which algorithm do link state protocols (OSPF) use?',opts:['Bellman-Ford','Dijkstra\'s SPF','Floyd-Warshall','A* Search'],ans:1},
+    {q:'What is RIP\'s maximum hop count before a route is considered unreachable?',opts:['10','15','16','255'],ans:1},
+    {q:'Split horizon prevents:',opts:['Routing loops only','Count-to-infinity problem','LSA flooding storms','MTU path mismatch'],ans:1},
+  ]},
+};
+
+function buildFlashcard(id) {
+  const data = flashData[id];
+  if (!data) return;
+  let idx = 0;
+  const wrap = document.getElementById('flashwrap-' + id);
+  function render() {
+    wrap.innerHTML = `
+      <div class="flashcard">
+        <div class="fc-front" style="color:${getColor(id)}">${data[idx].f}</div>
+        <div class="fc-back">${data[idx].b}</div>
+      </div>
+      <div class="flash-controls">
+        <button class="flash-btn" onclick="flashPrev('${id}')">← Prev</button>
+        <span class="flash-counter" id="fc-counter-${id}">${idx+1}/${data.length}</span>
+        <button class="flash-btn" onclick="flashNext('${id}')">Next →</button>
+      </div>`;
+  }
+  wrap._idx = 0;
+  wrap._data = data;
+  wrap._render = render;
+  render();
+}
+
+function flashNext(id) {
+  const wrap = document.getElementById('flashwrap-' + id);
+  wrap._idx = (wrap._idx + 1) % wrap._data.length;
+  const fc = document.getElementById('fc-counter-' + id);
+  wrap.querySelector('.fc-front').textContent = wrap._data[wrap._idx].f;
+  wrap.querySelector('.fc-back').textContent = wrap._data[wrap._idx].b;
+  if (fc) fc.textContent = (wrap._idx+1) + '/' + wrap._data.length;
+}
+
+function flashPrev(id) {
+  const wrap = document.getElementById('flashwrap-' + id);
+  wrap._idx = (wrap._idx - 1 + wrap._data.length) % wrap._data.length;
+  const fc = document.getElementById('fc-counter-' + id);
+  wrap.querySelector('.fc-front').textContent = wrap._data[wrap._idx].f;
+  wrap.querySelector('.fc-back').textContent = wrap._data[wrap._idx].b;
+  if (fc) fc.textContent = (wrap._idx+1) + '/' + wrap._data.length;
+}
+
+function toggleFlash(id) {
+  const el = document.getElementById('flash-' + id);
+  const btn = document.getElementById('flash-btn-' + id);
+  const isHidden = el.style.display === 'none';
+  el.style.display = isHidden ? 'block' : 'none';
+  if (isHidden && !el._built) {
+    buildFlashcard(id);
+    el._built = true;
+  }
+  const color = getColor(id);
+  btn.style.background = isHidden ? color : 'transparent';
+  btn.style.color = isHidden ? '#000' : color;
+}
+
+function getColor(id) {
+  const map = {switching:'#00d4ff',ip:'#7c3aed',ipaddr:'#10b981',cidr:'#f59e0b',subnetting:'#ef4444',supernetting:'#ec4899',nat:'#06b6d4',arp:'#84cc16',dhcp:'#f97316',icmp:'#a855f7',routing:'#14b8a6'};
+  return map[id] || '#00d4ff';
+}
+
+function buildQuiz(id) {
+  const d = quizData[id];
+  const el = document.getElementById('quiz-' + id);
+  if (!el || !d || el._built) return;
+  el._built = true;
+  el._answers = {};
+  el._submitted = false;
+  const labels = ['A','B','C','D'];
+  let html = `<div class="quiz-title" style="color:${d.color}">📝 Quick Quiz — Test Yourself</div>`;
+  d.qs.forEach((q, qi) => {
+    html += `<div class="quiz-q" id="qq-${id}-${qi}">
+      <div class="qtext">${qi+1}. ${q.q}</div>
+      <div class="quiz-opts">`;
+    q.opts.forEach((opt, oi) => {
+      html += `<button class="opt-btn" id="opt-${id}-${qi}-${oi}" onclick="selectOpt('${id}',${qi},${oi})">${labels[oi]}. ${opt}</button>`;
+    });
+    html += `</div></div>`;
+  });
+  html += `<button class="quiz-submit" id="qsub-${id}" onclick="submitQuiz('${id}')" disabled>Submit Answers</button>
+  <div id="qresult-${id}" style="display:none" class="quiz-result"></div>`;
+  el.innerHTML = html;
+}
+
+function selectOpt(id, qi, oi) {
+  const d = quizData[id];
+  const el = document.getElementById('quiz-' + id);
+  if (el._submitted) return;
+  el._answers[qi] = oi;
+  const numQ = d.qs.length;
+  for (let x = 0; x < d.qs[qi].opts.length; x++) {
+    const b = document.getElementById('opt-'+id+'-'+qi+'-'+x);
+    b.classList.toggle('selected', x === oi);
+  }
+  const sub = document.getElementById('qsub-'+id);
+  if (Object.keys(el._answers).length >= numQ) sub.removeAttribute('disabled');
+}
+
+function submitQuiz(id) {
+  const d = quizData[id];
+  const el = document.getElementById('quiz-' + id);
+  el._submitted = true;
+  let score = 0;
+  d.qs.forEach((q, qi) => {
+    const chosen = el._answers[qi];
+    q.opts.forEach((_, oi) => {
+      const b = document.getElementById('opt-'+id+'-'+qi+'-'+oi);
+      b.setAttribute('disabled', true);
+      b.classList.remove('selected');
+      if (oi === q.ans) b.classList.add('correct');
+      else if (oi === chosen && oi !== q.ans) b.classList.add('wrong');
+    });
+    if (chosen === q.ans) score++;
+  });
+  document.getElementById('qsub-'+id).style.display = 'none';
+  const res = document.getElementById('qresult-'+id);
+  res.style.display = 'flex';
+  const color = score === d.qs.length ? '#10b981' : score >= Math.ceil(d.qs.length/2) ? '#f59e0b' : '#ef4444';
+  const emoji = score === d.qs.length ? '🎉 Perfect!' : score >= Math.ceil(d.qs.length/2) ? '✓ Good job!' : '✗ Keep studying!';
+  res.innerHTML = `<span class="result-score" style="color:${color}">${score}/${d.qs.length} — ${emoji}</span>
+    <button class="retry-btn" onclick="retryQuiz('${id}')">↺ Retry</button>`;
+}
+
+function retryQuiz(id) {
+  const el = document.getElementById('quiz-' + id);
+  el._built = false;
+  buildQuiz(id);
+}
+
+function ipToNum(ip) {
+  const p = ip.split('.').map(Number);
+  if (p.length !== 4 || p.some(x => isNaN(x) || x < 0 || x > 255)) return null;
+  return ((p[0]<<24)|(p[1]<<16)|(p[2]<<8)|p[3])>>>0;
+}
+
+function numToIP(n) {
+  return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].join('.');
+}
+
+function numToBin(n) {
+  return [(n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255].map(b=>b.toString(2).padStart(8,'0')).join('.');
+}
+
+function doCalc(ipId, prefixId, cardsId, binToggleId, binDisplayId, binContentId, errorId, resultsId) {
+  const ip = document.getElementById(ipId).value.trim();
+  const prefix = parseInt(document.getElementById(prefixId).value);
+  const errEl = document.getElementById(errorId);
+  const resEl = document.getElementById(resultsId);
+  errEl.style.display = 'none';
+  resEl.style.display = 'none';
+  const ipNum = ipToNum(ip);
+  if (ipNum === null) { errEl.textContent = '✗ Invalid IP address format'; errEl.style.display='block'; return; }
+  if (isNaN(prefix)||prefix<0||prefix>32) { errEl.textContent = '✗ Prefix must be 0–32'; errEl.style.display='block'; return; }
+  const maskNum = prefix===0?0:(0xFFFFFFFF<<(32-prefix))>>>0;
+  const netNum = (ipNum&maskNum)>>>0;
+  const bcastNum = (netNum|(~maskNum>>>0))>>>0;
+  const blockSize = Math.pow(2, 32-prefix);
+  const hosts = prefix>=31?(prefix===31?2:1):blockSize-2;
+  const cards = [
+    {label:'Network Address',val:numToIP(netNum),color:'#10b981'},
+    {label:'Broadcast Address',val:numToIP(bcastNum),color:'#ef4444'},
+    {label:'Subnet Mask',val:numToIP(maskNum),color:'#7c3aed'},
+    {label:'First Host',val:numToIP(netNum+1),color:'#00d4ff'},
+    {label:'Last Host',val:numToIP(bcastNum-1),color:'#00d4ff'},
+    {label:'Usable Hosts',val:hosts.toLocaleString(),color:'#f59e0b'},
+    {label:'Block Size',val:blockSize.toLocaleString(),color:'#ec4899'},
+    {label:'CIDR Notation',val:numToIP(netNum)+'/'+prefix,color:'#84cc16'},
+  ];
+  document.getElementById(cardsId).innerHTML = cards.map(c=>`
+    <div class="calc-result-card">
+      <div class="rlabel">${c.label}</div>
+      <div class="rval" style="color:${c.color}">${c.val}</div>
+    </div>`).join('');
+  const binIP = numToBin(ipNum);
+  const flatBin = binIP.replace(/\./g,'');
+  let binHTML = '<div style="margin-bottom:8px"><div class="blabel" style="margin-bottom:6px">IP Address Binary</div><div class="bline">';
+  for (let i=0;i<32;i++) {
+    binHTML += `<span class="${i<prefix?'net-bit':'host-bit'}">${flatBin[i]}</span>`;
+    if (i===7||i===15||i===23) binHTML+='<span class="dot-bit">.</span>';
+  }
+  binHTML += '</div></div>';
+  binHTML += `<div><div class="blabel" style="margin-bottom:6px">Subnet Mask Binary</div><div class="bline">`;
+  const maskBin = numToBin(maskNum).replace(/\./g,'');
+  for (let i=0;i<32;i++) {
+    binHTML += `<span class="${maskBin[i]==='1'?'net-bit':'host-bit'}">${maskBin[i]}</span>`;
+    if (i===7||i===15||i===23) binHTML+='<span class="dot-bit">.</span>';
+  }
+  binHTML += '</div></div>';
+  document.getElementById(binContentId).innerHTML = binHTML;
+  document.getElementById(binToggleId).textContent = '▶ Show Binary Breakdown';
+  document.getElementById(binDisplayId).style.display = 'none';
+  resEl.style.display = 'block';
+}
+
+function calculateSubnet() {
+  doCalc('calc-ip','calc-prefix','calc-cards','binary-toggle-btn','binary-display','binary-content','calc-error','calc-results');
+}
+
+function calculateSubnetTool() {
+  doCalc('tool-calc-ip','tool-calc-prefix','tool-calc-cards','tool-binary-toggle-btn','tool-binary-display','tool-binary-content','tool-calc-error','tool-calc-results');
+}
+
+function toggleBinary() {
+  const d = document.getElementById('binary-display');
+  const isHide = d.style.display !== 'none';
+  d.style.display = isHide ? 'none' : 'block';
+  document.getElementById('binary-toggle-btn').textContent = isHide ? '▶ Show Binary Breakdown' : '▼ Hide Binary Breakdown';
+}
+
+function toggleBinaryTool() {
+  const d = document.getElementById('tool-binary-display');
+  const isHide = d.style.display !== 'none';
+  d.style.display = isHide ? 'none' : 'block';
+  document.getElementById('tool-binary-toggle-btn').textContent = isHide ? '▶ Show Binary Breakdown' : '▼ Hide Binary Breakdown';
+}
+
+function buildCidrTable() {
+  const table = document.getElementById('cidr-ref-table');
+  if (table._built) return;
+  table._built = true;
+  const prefixes = [8,12,16,17,20,21,22,23,24,25,26,27,28,29,30,31,32];
+  let html = `<thead><tr><th>/Prefix</th><th>Subnet Mask</th><th>Total Addrs</th><th>Usable Hosts</th><th>Block Size</th></tr></thead><tbody>`;
+  prefixes.forEach(p => {
+    const m = p===0?0:(0xFFFFFFFF<<(32-p))>>>0;
+    const mask = [(m>>>24)&255,(m>>>16)&255,(m>>>8)&255,m&255].join('.');
+    const total = Math.pow(2,32-p);
+    const hosts = p>=31?(p===31?2:1):total-2;
+    const hl = [24,25,26,27,28,29,30].includes(p);
+    html += `<tr${hl?' class="highlight-row"':''}><td style="color:var(--cyan)">/${p}</td><td style="color:var(--text2)">${mask}</td><td style="color:var(--text)">${total.toLocaleString()}</td><td style="color:var(--green)">${hosts.toLocaleString()}</td><td style="color:var(--amber)">${total}</td></tr>`;
+  });
+  html += '</tbody>';
+  table.innerHTML = html;
+}
+
+function identifyClass() {
+  const ip = document.getElementById('class-ip').value.trim();
+  const num = ipToNum(ip);
+  const el = document.getElementById('class-result');
+  if (num === null) { el.style.display='block'; el.innerHTML='<span style="color:var(--red)">✗ Invalid IP address</span>'; return; }
+  const first = (num>>>24)&255;
+  let cls, range, defMask, hosts, color;
+  if (first === 127) { cls='Loopback'; range='127.0.0.0/8'; defMask='N/A'; hosts='N/A'; color='#64748b'; }
+  else if (first === 0) { cls='Special (this network)'; range='0.0.0.0/8'; defMask='N/A'; hosts='N/A'; color='#64748b'; }
+  else if (first < 128) { cls='Class A'; range='1.0.0.0 – 126.255.255.255'; defMask='/8 (255.0.0.0)'; hosts='16,777,214'; color='#00d4ff'; }
+  else if (first < 192) { cls='Class B'; range='128.0.0.0 – 191.255.255.255'; defMask='/16 (255.255.0.0)'; hosts='65,534'; color='#7c3aed'; }
+  else if (first < 224) { cls='Class C'; range='192.0.0.0 – 223.255.255.255'; defMask='/24 (255.255.255.0)'; hosts='254'; color='#10b981'; }
+  else if (first < 240) { cls='Class D (Multicast)'; range='224.0.0.0 – 239.255.255.255'; defMask='N/A'; hosts='N/A'; color='#f59e0b'; }
+  else { cls='Class E (Reserved)'; range='240.0.0.0 – 255.255.255.255'; defMask='N/A'; hosts='N/A'; color='#ef4444'; }
+  
+  const isPrivate = (first===10) || (first===172&&((num>>>16)&255)>=16&&((num>>>16)&255)<=31) || (first===192&&((num>>>16)&255)===168);
+  el.style.display = 'block';
+  el.innerHTML = `<div style="font-size:16px;font-weight:700;color:${color};margin-bottom:10px">${ip} → ${cls}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+      <div><span style="color:var(--text3)">Range: </span><span style="color:var(--text)">${range}</span></div>
+      <div><span style="color:var(--text3)">Default Mask: </span><span style="color:var(--cyan)">${defMask}</span></div>
+      <div><span style="color:var(--text3)">Hosts/Network: </span><span style="color:var(--green)">${hosts}</span></div>
+      <div><span style="color:var(--text3)">Private Range: </span><span style="color:${isPrivate?'#10b981':'#ef4444'}">${isPrivate?'✓ Yes (RFC 1918)':'✗ No (Public)'}</span></div>
+    </div>`;
+}
+
+Object.keys(quizData).forEach(id => {
+  const orig = showPage;
+  (function(tid) {
+    const observer = new MutationObserver(() => {
+      const el = document.getElementById('quiz-' + tid);
+      if (el && !el._built && document.getElementById('page-'+tid).classList.contains('active')) {
+        buildQuiz(tid);
+      }
+    });
+    const page = document.getElementById('page-'+tid);
+    if (page) observer.observe(page, {attributes:true, attributeFilter:['class']});
+  })(id);
+});
+
+const origShowPage = window.showPage;
+window.showPage = function(id) {
+  origShowPage ? origShowPage(id) : showPage(id);
+  if (quizData[id]) {
+    setTimeout(() => buildQuiz(id), 50);
+  }
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const sb = document.getElementById('sb-' + id);
+  if (sb) sb.classList.add('active');
+  window.scrollTo(0, 0);
+  if (id !== 'home' && id !== 'tools') markDone(id);
+  if (id === 'tools') buildCidrTable();
+  if (quizData[id]) setTimeout(() => buildQuiz(id), 50);
+}
+
+document.querySelectorAll('.section-body').forEach(b => {
+  if (!b.previousElementSibling.classList.contains('open')) b.style.display = 'none';
+});
+
+document.querySelectorAll('.section-toggle').forEach(btn => {
+  const body = btn.nextElementSibling;
+  if (!btn.classList.contains('open')) body.style.display = 'none';
+});
+</script>
+</body>
+</html>
